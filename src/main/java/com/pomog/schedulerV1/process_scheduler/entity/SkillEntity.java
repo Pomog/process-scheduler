@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "skill")
 @Data
@@ -15,7 +17,7 @@ public class SkillEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int ID;
+    private UUID ID;
     
     @Column(name = "process_name")
     @NonNull

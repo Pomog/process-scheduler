@@ -1,6 +1,7 @@
 package com.pomog.schedulerV1.process_scheduler.dto;
 
 import com.pomog.schedulerV1.process_scheduler.annotation.NotNegativeDuration;
+import com.pomog.schedulerV1.process_scheduler.annotation.ValidUUID;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,12 +12,16 @@ import com.pomog.schedulerV1.process_scheduler.entity.StepEntity;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor
 public class StepDTO {
+    
+    @ValidUUID
+    private UUID ID;
     
     @NotBlank(message = "Name cannot be blank")
     @Size(min = 2, max = 30, message = "Name must be between 2 and 30 characters")
@@ -37,6 +42,7 @@ public class StepDTO {
     private List<OperatorDTO> operators; // Operators certified for this stage
     
     public StepDTO(StepEntity stepEntity){
+        this.ID = stepEntity.getID();
         this.stepName = stepEntity.getStepName();
         this.room = new RoomDTO(stepEntity.getRoomEntity());
         this.duration = stepEntity.getDuration();

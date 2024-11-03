@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "room", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"code"})
@@ -17,7 +19,7 @@ public class RoomEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int ID;
+    private UUID ID;
     
     @Column(name = "code")
     @NonNull

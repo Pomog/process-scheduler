@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "step")
@@ -19,7 +20,7 @@ public class StepEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int ID;
+    private UUID ID;
     
     @Column(name = "step-name")
     @NonNull
