@@ -1,16 +1,20 @@
 package com.pomog.schedulerV1.process_scheduler.dto;
 
+import com.pomog.schedulerV1.process_scheduler.annotation.ValidUUID;
 import com.pomog.schedulerV1.process_scheduler.entity.EquipmentEntity;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 public class EquipmentDTO {
+    
+    @ValidUUID
+    private UUID ID;
+    
     @NotBlank(message = "Name cannot be blank")
     @Size(min = 2, max = 30, message = "Name must be between 2 and 30 characters")
     private String name;
@@ -21,7 +25,12 @@ public class EquipmentDTO {
     
     private List<StepDTO> steps = new ArrayList<>();
     
+    public void addStep(StepDTO stepDTO){
+        steps.add(stepDTO);
+    }
+    
     public EquipmentDTO(EquipmentEntity equipmentEntity) {
+        this.ID = equipmentEntity.getID();
         this.name = equipmentEntity.getName();
         this.code = equipmentEntity.getCode();
         this.steps.addAll(equipmentEntity.getStepEntities().stream()

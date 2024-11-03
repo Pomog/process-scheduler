@@ -26,8 +26,8 @@ public class StepDTO {
     
     @NotNull(message = "Duration cannot be null")
     @NotNegativeDuration(message = "Duration must not be negative")
-    
     private Duration duration;
+    
     private boolean isNightShift;
     private boolean isWeekend;
     private LocalDateTime startTime;
