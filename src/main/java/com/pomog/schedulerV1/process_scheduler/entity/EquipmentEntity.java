@@ -16,20 +16,21 @@ import java.util.UUID;
 @NoArgsConstructor
 public class EquipmentEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private UUID ID;
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID ID = UUID.randomUUID(); // Generate UUID when an instance is created
     
     @Column(name = "name")
     private String name;
     
     @NonNull
-    @Column(name = "name")
+    @Column(name = "code")
     private String code;
     
-    @OneToMany(
-            mappedBy = "step",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "equipment_steps",
+            joinColumns = @JoinColumn(name = "equipment_id"),
+            inverseJoinColumns = @JoinColumn(name = "step_id")
+    )
     private List<StepEntity> stepEntities;
 }

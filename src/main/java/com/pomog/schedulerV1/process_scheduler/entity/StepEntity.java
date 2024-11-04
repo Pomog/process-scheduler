@@ -18,29 +18,31 @@ import java.util.UUID;
 @NoArgsConstructor
 public class StepEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private UUID ID;
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID ID = UUID.randomUUID(); // Generate UUID when an instance is created
     
     @Column(name = "step-name")
     @NonNull
     private String stepName;
     
-    @OneToMany(
-            mappedBy = "equipmentEntities",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER)
-    private List<EquipmentEntity> equipmentEntities;
+    @ManyToOne
+    @JoinColumn(name = "process_id")
+    private ProcessEntity processEntity;
+    
+    @ManyToMany(mappedBy = "stepEntities", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<EquipmentEntity> equipmentEntity;
     
     @OneToOne
     @JoinColumn(name = "code")
     private RoomEntity roomEntity;
     
-    @OneToMany(
-            mappedBy = "operator",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER)
-    private List<OperatorEntity> operatorEntities; // Operators certified for this stage
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "step_operator",
+            joinColumns = @JoinColumn(name = "step_id"),
+            inverseJoinColumns = @JoinColumn(name = "operator_id")
+    )
+    private List<OperatorEntity> operatorEntities;
     
     @Column(name = "duration")
     private Duration duration;

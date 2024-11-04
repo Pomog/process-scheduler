@@ -17,9 +17,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class RoomEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private UUID ID;
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID ID = UUID.randomUUID(); // Generate UUID when an instance is created
     
     @Column(name = "code")
     @NonNull

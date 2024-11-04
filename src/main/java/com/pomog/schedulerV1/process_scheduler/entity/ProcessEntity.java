@@ -16,16 +16,15 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ProcessEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private UUID ID;
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID ID = UUID.randomUUID(); // Generate UUID when an instance is created
     
     @Column(name = "process-name")
     @NonNull
     private String processName;
     
     @OneToMany(
-            mappedBy = "step",
+            mappedBy = "processEntity",
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER)
     private List<StepEntity> stepEntities;

@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 @Data
 @RequiredArgsConstructor
-@NoArgsConstructor
 public class OperatorDTO {
     
     @ValidUUID

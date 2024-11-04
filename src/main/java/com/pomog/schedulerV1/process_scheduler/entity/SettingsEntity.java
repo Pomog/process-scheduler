@@ -17,9 +17,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class SettingsEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private UUID ID;
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID ID = UUID.randomUUID(); // Generate UUID when an instance is created
     
     @Column(name = "name")
     @NonNull
@@ -28,9 +27,9 @@ public class SettingsEntity {
     @Column(name = "normal_hours")
     private double normalHours;
     
-    @Column(name = "normal_hours")
+    @Column(name = "night_coefficient")
     private double nightCoefficient;
     
-    @Column(name = "normal_hours")
+    @Column(name = "weekend_coefficient")
     private double weekendCoefficient;
 }

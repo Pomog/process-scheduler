@@ -14,7 +14,6 @@ import java.util.UUID;
 
 @Data
 @RequiredArgsConstructor
-@NoArgsConstructor
 public class RoomDTO {
     
     @ValidUUID

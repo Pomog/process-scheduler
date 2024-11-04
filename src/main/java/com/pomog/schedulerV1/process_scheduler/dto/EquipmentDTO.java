@@ -4,12 +4,14 @@ import com.pomog.schedulerV1.process_scheduler.annotation.ValidUUID;
 import com.pomog.schedulerV1.process_scheduler.entity.EquipmentEntity;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Data
+@RequiredArgsConstructor
 public class EquipmentDTO {
     
     @ValidUUID

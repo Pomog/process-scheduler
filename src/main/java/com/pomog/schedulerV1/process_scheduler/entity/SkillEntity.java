@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -15,9 +16,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class SkillEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private UUID ID;
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID ID = UUID.randomUUID(); // Generate UUID when an instance is created
     
     @Column(name = "process_name")
     @NonNull
@@ -29,4 +29,7 @@ public class SkillEntity {
     
     @Column(name = "level")
     private int level;
+    
+    @ManyToMany(mappedBy = "skillEntities", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<OperatorEntity> operatorEntities;
 }

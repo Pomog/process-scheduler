@@ -4,10 +4,7 @@ import com.pomog.schedulerV1.process_scheduler.dto.StepDTO;
 import com.pomog.schedulerV1.process_scheduler.entity.StepEntity;
 import com.pomog.schedulerV1.process_scheduler.service.StepService;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import response.Response;
 
 @RestController
@@ -25,5 +22,12 @@ public class StepController {
         System.out.println(stepEntity);
         
         return stepService.saveStep(stepEntity);
+    }
+    
+    @GetMapping
+    public void saveStep2 () {
+        
+        System.out.println("TestTestTestTestTestTestTestTestTestTest");
+
     }
 }

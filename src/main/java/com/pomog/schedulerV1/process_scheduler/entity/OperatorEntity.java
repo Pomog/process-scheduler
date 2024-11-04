@@ -18,16 +18,15 @@ import java.util.UUID;
 @NoArgsConstructor
 public class OperatorEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private UUID ID;
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID ID = UUID.randomUUID(); // Generate UUID when an instance is created
     
     @Column(name = "name")
     @NonNull
     private String name;
     
     @OneToOne
-    @JoinColumn(name = "name")
+    @JoinColumn(name = "settings")
     private SettingsEntity settingsEntity;
     
     @Column(name = "prefers_night")
@@ -36,9 +35,11 @@ public class OperatorEntity {
     @Column(name = "prefers_wekend")
     private boolean prefersWeekend;
     
-    @OneToMany(
-            mappedBy = "skill",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "operator_skill",
+            joinColumns = @JoinColumn(name = "operator_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id")
+    )
     private List<SkillEntity> skillEntities;
 }

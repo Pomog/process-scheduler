@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 
 @Data
 @RequiredArgsConstructor
-@NoArgsConstructor
 public class StepDTO {
     
     @ValidUUID
@@ -51,7 +50,7 @@ public class StepDTO {
         this.startTime = stepEntity.getStartTime();
         this.endTime = stepEntity.getEndTime();
         
-        this.equipment = stepEntity.getEquipmentEntities().stream()
+        this.equipment = stepEntity.getEquipmentEntity().stream()
                 .map(EquipmentDTO::new).collect(Collectors.toList());
         this.operators = stepEntity.getOperatorEntities().stream()
                 .map(OperatorDTO::new)
