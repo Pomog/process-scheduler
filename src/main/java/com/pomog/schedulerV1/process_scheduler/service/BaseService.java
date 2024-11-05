@@ -1,6 +1,6 @@
 package com.pomog.schedulerV1.process_scheduler.service;
 
-import response.Response;
+import com.pomog.schedulerV1.process_scheduler.response.Response;
 
 public abstract class BaseService<T> {
     protected Response<T> generateResponse(int status, String message, T data) {

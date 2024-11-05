@@ -5,7 +5,7 @@ import com.pomog.schedulerV1.process_scheduler.entity.StepEntity;
 import com.pomog.schedulerV1.process_scheduler.service.StepService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import response.Response;
+import com.pomog.schedulerV1.process_scheduler.response.Response;
 
 @RestController
 @RequestMapping("/step")

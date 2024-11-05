@@ -6,6 +6,9 @@ https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
 ```bash
 net start postgresql-x64-17
 ```
+```powershell
+Get-Service -Name "postgresql-x64-17"
+```
 
 # Connect to PostgreSQL
 ```bash

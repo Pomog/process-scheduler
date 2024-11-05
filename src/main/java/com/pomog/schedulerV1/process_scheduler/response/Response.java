@@ -1,4 +1,4 @@
-package response;
+package com.pomog.schedulerV1.process_scheduler.response;
 
 import lombok.*;
 
