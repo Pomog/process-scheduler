@@ -12,7 +12,10 @@ public interface SettingsService {
     Response<SettingsDTO> saveSettings(SettingsEntity settings);
     
     // read operation
-    List<SettingsEntity> fetchDepartmentList();
+    Response<List<SettingsDTO>> fetchSettingsList();
+    
+    // find
+    Response<SettingsDTO> findById(UUID settingsId);
     
     // update operation
     SettingsEntity updateSettings(SettingsEntity settings, UUID settingsId);

@@ -2,12 +2,10 @@ package com.pomog.schedulerV1.process_scheduler.service;
 
 
 import com.pomog.schedulerV1.process_scheduler.dto.SettingsDTO;
-import com.pomog.schedulerV1.process_scheduler.dto.StepDTO;
-import com.pomog.schedulerV1.process_scheduler.entity.EquipmentEntity;
 import com.pomog.schedulerV1.process_scheduler.entity.SettingsEntity;
+import com.pomog.schedulerV1.process_scheduler.exception.ResourceNotFoundException;
 import com.pomog.schedulerV1.process_scheduler.repository.SettingsRepository;
 import com.pomog.schedulerV1.process_scheduler.response.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +13,13 @@ import java.util.UUID;
 
 @Service
 public class SettingsServiceImpl extends BaseService<SettingsDTO> implements SettingsService {
-    @Autowired
-    private SettingsRepository settingsRepository;
+    
+    private final SettingsRepository settingsRepository;
+    
+    public SettingsServiceImpl(SettingsRepository settingsRepository) {
+        this.settingsRepository = settingsRepository;
+    }
+    
     @Override
     public Response<SettingsDTO> saveSettings(SettingsEntity settings) {
         SettingsEntity savedSettings = settingsRepository.save(settings);
@@ -24,8 +27,18 @@ public class SettingsServiceImpl extends BaseService<SettingsDTO> implements Set
     }
     
     @Override
-    public List<SettingsEntity> fetchDepartmentList() {
-        return (List<SettingsEntity>) settingsRepository.findAll();
+    public Response<List<SettingsDTO>> fetchSettingsList() {
+        List<SettingsEntity> settingsEntities = (List<SettingsEntity>) settingsRepository.findAll();
+        List<SettingsDTO> responseData = settingsEntities.stream().
+                map(SettingsDTO::new).toList();
+        return new Response<>(200, "OK", responseData);
+    }
+    
+    @Override
+    public Response<SettingsDTO> findById(UUID settingsId) {
+        SettingsEntity foundSettings = settingsRepository.findById(settingsId).
+                orElseThrow(() ->new ResourceNotFoundException("settings with " + settingsId + " not found"));
+        return generateResponse(200, "OK", new SettingsDTO(foundSettings));
     }
     
     @Override
