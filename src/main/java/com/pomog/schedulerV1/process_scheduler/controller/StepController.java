@@ -1,4 +1,4 @@
-package com.pomog.schedulerV1.process_scheduler.rest;
+package com.pomog.schedulerV1.process_scheduler.controller;
 
 import com.pomog.schedulerV1.process_scheduler.dto.StepDTO;
 import com.pomog.schedulerV1.process_scheduler.entity.StepEntity;

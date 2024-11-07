@@ -1,6 +1,5 @@
-package com.pomog.schedulerV1.process_scheduler.rest;
+package com.pomog.schedulerV1.process_scheduler.testController;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,8 +12,11 @@ import java.sql.SQLException;
 @RestController
 public class DatabaseTestController {
     
-    @Autowired
     private DataSource dataSource;
+    
+    public DatabaseTestController(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
     
     @GetMapping("/test-db")
     public ResponseEntity<String> testDatabaseConnection() {

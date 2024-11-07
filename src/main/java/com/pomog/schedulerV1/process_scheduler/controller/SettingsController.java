@@ -31,7 +31,19 @@ public class SettingsController {
     }
     
     @GetMapping("/{id}")
-    public Response<SettingsDTO> getSettingsById(@PathVariable UUID id) {
+    public Response<SettingsDTO> getSettingsById(@Valid @PathVariable UUID id) {
         return settingsService.findById(id);
+    }
+    
+    @PutMapping("/{id}")
+    public Response<SettingsDTO> updateSettings(@Valid @PathVariable UUID id, @Valid @RequestBody SettingsEntity settingsEntity) {
+        SettingsEntity updatedSettings = settingsService.updateSettings(settingsEntity, id);
+        return new Response<>(200, "Updated", new SettingsDTO(updatedSettings));
+    }
+    
+    @DeleteMapping("/{id}")
+    public Response<Void> deleteSettingsById(@Valid @PathVariable UUID id) {
+        settingsService.deleteSettingsById(id);
+        return new Response<>(200, "Deleted successfully", null);
     }
 }
