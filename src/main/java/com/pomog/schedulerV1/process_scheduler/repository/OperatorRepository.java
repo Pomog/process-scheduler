@@ -3,6 +3,8 @@ package com.pomog.schedulerV1.process_scheduler.repository;
 import com.pomog.schedulerV1.process_scheduler.entity.OperatorEntity;
 import com.pomog.schedulerV1.process_scheduler.entity.SkillEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,4 +28,7 @@ public interface OperatorRepository extends JpaRepository<OperatorEntity, UUID> 
     
     // Find all operators with a specific skill by process name and step name
     List<OperatorEntity> findBySkillEntities_ProcessNameAndSkillEntities_StepName(String processName, String stepName);
+    
+    @Query("SELECT o FROM OperatorEntity o JOIN o.skillEntities s WHERE s.processName = :name")
+    List<SkillEntity> findBySkills_ProcessName(@Param("level") String name);
 }
