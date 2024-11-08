@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,5 +42,14 @@ public class OperatorEntity {
             joinColumns = @JoinColumn(name = "operator_id"),
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
-    private List<SkillEntity> skillEntities;
+    private List<SkillEntity> skillEntities = new ArrayList<>();
+    
+    public void addSkill (SkillEntity skillEntity) {
+        skillEntities.add(skillEntity);
+    }
+    
+    public void removeSkill (SkillEntity skillEntity) {
+        skillEntities.remove(skillEntity);
+    }
+    
 }

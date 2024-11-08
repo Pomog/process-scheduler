@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,5 +32,22 @@ public class SkillEntity {
     private int level;
     
     @ManyToMany(mappedBy = "skillEntities", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<OperatorEntity> operatorEntities;
+    private List<OperatorEntity> operatorEntities = new ArrayList<>();
+    
+    public void addOperator (OperatorEntity operatorEntity) {
+        operatorEntities.add(operatorEntity);
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SkillEntity that)) return false;
+        
+        return getID().equals(that.getID());
+    }
+    
+    @Override
+    public int hashCode() {
+        return getID().hashCode();
+    }
 }
