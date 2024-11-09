@@ -1,24 +1,24 @@
 package com.pomog.schedulerV1.process_scheduler.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "skill")
+@Table(name = "skill", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"process_name", "step_name"})
+})
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor
 public class SkillEntity {
     @Id
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID ID = UUID.randomUUID(); // Generate UUID when an instance is created
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID ID;
     
     @Column(name = "process_name")
     @NonNull
@@ -42,12 +42,17 @@ public class SkillEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof SkillEntity that)) return false;
+        if (!super.equals(o)) return false;
         
-        return getID().equals(that.getID());
+        if (!getProcessName().equals(that.getProcessName())) return false;
+        return getStepName().equals(that.getStepName());
     }
     
     @Override
     public int hashCode() {
-        return getID().hashCode();
+        int result = super.hashCode();
+        result = 31 * result + getProcessName().hashCode();
+        result = 31 * result + getStepName().hashCode();
+        return result;
     }
 }

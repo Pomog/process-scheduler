@@ -18,10 +18,11 @@ import java.util.UUID;
 })
 @Data
 @RequiredArgsConstructor
-public class SettingsEntity {
+public class SettingsEntity{
     @Id
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID ID = UUID.randomUUID(); // Generate UUID when an instance is created
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID ID; // Generate UUID when an instance is created
     
     @Column(name = "name")
     @NotBlank
@@ -38,4 +39,22 @@ public class SettingsEntity {
     @Column(name = "weekend_coefficient")
     @Positive
     private double weekendCoefficient;
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SettingsEntity that)) return false;
+        if (!super.equals(o)) return false;
+        
+        if (getID() != null ? !getID().equals(that.getID()) : that.getID() != null) return false;
+        return getName().equals(that.getName());
+    }
+    
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (getID() != null ? getID().hashCode() : 0);
+        result = 31 * result + getName().hashCode();
+        return result;
+    }
 }

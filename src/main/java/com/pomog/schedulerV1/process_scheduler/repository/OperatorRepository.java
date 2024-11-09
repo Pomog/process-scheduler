@@ -29,6 +29,5 @@ public interface OperatorRepository extends JpaRepository<OperatorEntity, UUID> 
     // Find all operators with a specific skill by process name and step name
     List<OperatorEntity> findBySkillEntities_ProcessNameAndSkillEntities_StepName(String processName, String stepName);
     
-    @Query("SELECT o FROM OperatorEntity o JOIN o.skillEntities s WHERE s.processName = :name")
-    List<SkillEntity> findBySkills_ProcessName(@Param("level") String name);
+    List<OperatorEntity> findBySkillEntities_ProcessName(String processName);
 }
