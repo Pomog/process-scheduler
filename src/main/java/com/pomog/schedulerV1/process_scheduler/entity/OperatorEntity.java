@@ -21,7 +21,7 @@ public class OperatorEntity{
     @Id
     @Column(name = "id", updatable = false, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID ID; // Generate UUID when an instance is created
+    private UUID ID;
     
     @Column(name = "name")
     @NonNull
@@ -45,8 +45,11 @@ public class OperatorEntity{
     )
     private List<SkillEntity> skillEntities = new ArrayList<>();
     
+    // Set mutual connections
+    // https://www.bezkoder.com/jpa-many-to-many/
     public void addSkill (SkillEntity skillEntity) {
-        skillEntities.add(skillEntity);
+        this.skillEntities.add(skillEntity);
+        skillEntity.getOperatorEntities().add(this);
     }
     
     public void removeSkill (SkillEntity skillEntity) {
