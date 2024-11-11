@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -17,7 +18,7 @@ import java.util.UUID;
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor
-public class OperatorEntity{
+public class OperatorEntity {
     @Id
     @Column(name = "id", updatable = false, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,7 +28,7 @@ public class OperatorEntity{
     @NonNull
     private String name;
     
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "settings")
     private SettingsEntity settingsEntity;
     
@@ -37,7 +38,11 @@ public class OperatorEntity{
     @Column(name = "prefers_wekend")
     private boolean prefersWeekend;
     
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    },
+            fetch = FetchType.LAZY)
     @JoinTable(
             name = "operator_skill",
             joinColumns = @JoinColumn(name = "operator_id"),
@@ -45,15 +50,32 @@ public class OperatorEntity{
     )
     private List<SkillEntity> skillEntities = new ArrayList<>();
     
-    // Set mutual connections
-    // https://www.bezkoder.com/jpa-many-to-many/
-    public void addSkill (SkillEntity skillEntity) {
-        this.skillEntities.add(skillEntity);
-        skillEntity.getOperatorEntities().add(this);
+    public boolean addSkill(SkillEntity skillEntity) {
+        return this.skillEntities.contains(skillEntity) && addSkillToEntity(skillEntity);
     }
     
-    public void removeSkill (SkillEntity skillEntity) {
-        skillEntities.remove(skillEntity);
+    private boolean addSkillToEntity(SkillEntity skillEntity) {
+        this.skillEntities.add(skillEntity);
+        skillEntity.getOperatorEntities().add(this);
+        return true;
+    }
+    
+    public boolean removeSkill(UUID skillID) {
+        return getSkillEntityToRemove(skillID)
+                .map(this::removeSkillFromEntities)
+                .orElse(false);
+    }
+    
+    private Optional<SkillEntity> getSkillEntityToRemove(UUID skillID) {
+        return this.skillEntities.stream()
+                .filter(skill -> skill.getID().equals(skillID))
+                .findFirst();
+    }
+    
+    private boolean removeSkillFromEntities(SkillEntity skillToRemove) {
+        this.skillEntities.remove(skillToRemove);
+        skillToRemove.getOperatorEntities().remove(this);
+        return true;
     }
     
     @Override

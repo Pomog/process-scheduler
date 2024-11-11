@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "skill", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"process_name", "step_name"})
@@ -31,13 +33,15 @@ public class SkillEntity {
     @Column(name = "level")
     private int level;
     
-    @ManyToMany(mappedBy = "skillEntities", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            },
+            mappedBy = "skillEntities")
+    @JsonIgnore // is used to ignore the logical property used in serialization and deserialization
     private List<OperatorEntity> operatorEntities = new ArrayList<>();
-    
-    public void addOperator (OperatorEntity operatorEntity) {
-        operatorEntities.add(operatorEntity);
-    }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
