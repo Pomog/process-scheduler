@@ -14,6 +14,7 @@ import java.util.UUID;
 public class EquipmentEntity {
     @Id
     @Column(name = "id", updatable = false, nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID ID; // Generate UUID when an instance is created
     
     @Column(name = "name")

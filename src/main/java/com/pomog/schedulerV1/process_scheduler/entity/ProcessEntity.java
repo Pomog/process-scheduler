@@ -17,6 +17,7 @@ import java.util.UUID;
 public class ProcessEntity {
     @Id
     @Column(name = "id", updatable = false, nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID ID = UUID.randomUUID(); // Generate UUID when an instance is created
     
     @Column(name = "process-name")

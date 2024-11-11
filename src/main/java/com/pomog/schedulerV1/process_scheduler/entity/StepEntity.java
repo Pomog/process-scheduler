@@ -19,7 +19,8 @@ import java.util.UUID;
 public class StepEntity {
     @Id
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID ID = UUID.randomUUID(); // Generate UUID when an instance is created
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID ID; // Generate UUID when an instance is created
     
     @Column(name = "step-name")
     @NonNull
