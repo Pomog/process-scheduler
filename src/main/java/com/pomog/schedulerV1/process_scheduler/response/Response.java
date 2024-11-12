@@ -4,21 +4,26 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Standard response wrapper for API responses.
+ * @param <T> the type of response data
+ */
 @Data
 @RequiredArgsConstructor
 public class Response<T> {
     @NonNull
-    private Integer status;   // "success" or "error"
+    private Integer statusCode;   // HTTP response code
     @NonNull
     private String message;   // Message for additional information
     private T data;           // Generic type for response data
+    private LocalDateTime timeStamp = LocalDateTime.now(); // Timestamp of response
     
-    public Response(@NonNull Integer status, @NonNull String message, T data) {
-        this.status = status;
+    @Builder
+    public Response(@NonNull Integer statusCode, @NonNull String message, T data) {
+        this.statusCode = statusCode;
         this.message = message;
         this.data = data;
     }
-    
-    private LocalDateTime timeStamp = LocalDateTime.now();
+
 }
 

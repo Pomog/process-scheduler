@@ -5,10 +5,7 @@ import com.pomog.schedulerV1.process_scheduler.entity.OperatorEntity;
 import com.pomog.schedulerV1.process_scheduler.response.Response;
 import com.pomog.schedulerV1.process_scheduler.service.OperatorService;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/operator")
@@ -21,6 +18,17 @@ public class OperatorController {
     
     @PostMapping
     public Response<OperatorDTO> saveOperator(@Valid @RequestBody OperatorEntity operatorEntity) {
-        return operatorService.saveOperator(operatorEntity);
+        return operatorService.getResponseSaveOperator(operatorEntity);
+    }
+    
+    /**
+     * Retrieves an operator by name.
+     * @param name the name of the operator to retrieve
+     * @return the response containing the operator data
+     * @throws ResourceNotFoundException if no operator with the given name is found
+     */
+    @GetMapping("/{operatorName}")
+    public Response<OperatorDTO> findOperatorByName(@PathVariable String operatorName){
+        return operatorService.getResponseFetchOperatorByName(operatorName);
     }
 }
