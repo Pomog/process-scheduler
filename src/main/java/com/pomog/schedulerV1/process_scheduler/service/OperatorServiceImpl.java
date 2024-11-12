@@ -9,6 +9,7 @@ import com.pomog.schedulerV1.process_scheduler.repository.OperatorRepository;
 import com.pomog.schedulerV1.process_scheduler.repository.SettingsRepository;
 import com.pomog.schedulerV1.process_scheduler.repository.SkillRepository;
 import com.pomog.schedulerV1.process_scheduler.response.Response;
+import com.pomog.schedulerV1.process_scheduler.response.ResponseFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -22,39 +23,35 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     private final ExceptionFactory exceptionFactory;
     
     private final OperatorDTOFactory operatorDTOFactory;
+    private final ResponseFactory responseFactory;
     
     public OperatorServiceImpl(OperatorRepository operatorRepository,
                                SettingsRepository settingsRepository,
                                SkillRepository skillRepository,
-                               ExceptionFactory exceptionFactory, OperatorDTOFactory operatorDTOFactory) {
+                               ExceptionFactory exceptionFactory, OperatorDTOFactory operatorDTOFactory, ResponseFactory responseFactory) {
         this.operatorRepository = operatorRepository;
         this.settingsRepository = settingsRepository;
         this.skillRepository = skillRepository;
         this.exceptionFactory = exceptionFactory;
         this.operatorDTOFactory = operatorDTOFactory;
+        this.responseFactory = responseFactory;
     }
     
     
     @Override
     public Response<OperatorDTO> getResponseSaveOperator(OperatorEntity operatorEntity) {
-        OperatorEntity savedOperator = operatorRepository.save(operatorEntity);
-
-        return Response.<OperatorDTO>builder()
-                .statusCode(HttpStatus.CREATED.value())
-                .message("Operator saved successfully")
-                .data(operatorDTOFactory.createFromEntity(savedOperator))
-                .build();
+        OperatorDTO operatorDTO = operatorDTOFactory.createFromEntity(saveOperatorEntity(operatorEntity));
+        return responseFactory.createCreatedResponse("Operator saved successfully", operatorDTO);
+    }
+    
+    protected OperatorEntity saveOperatorEntity(OperatorEntity operatorEntity) {
+        return operatorRepository.save(operatorEntity);
     }
     
     @Override
     public Response<OperatorDTO> getResponseFetchOperatorByName(String name) {
-        OperatorEntity foundOperator = fetchOperatorEntity(name);
-        
-        return Response.<OperatorDTO>builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Operator found successfully")
-                .data(operatorDTOFactory.createFromEntity(foundOperator))
-                .build();
+        OperatorDTO operatorDTO = operatorDTOFactory.createFromEntity(fetchOperatorEntity(name));
+        return responseFactory.createSuccessResponse("Operator found successfully", operatorDTO);
     }
     
     protected OperatorEntity fetchOperatorEntity(String name) {
