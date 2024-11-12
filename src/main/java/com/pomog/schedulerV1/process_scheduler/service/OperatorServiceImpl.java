@@ -53,7 +53,8 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     }
     
     protected OperatorEntity fetchOperatorEntity(String name) {
-        return operatorRepository.findOperatorEntityByName(name).orElseThrow(() -> exceptionFactory.createNotFoundException("Operator", "name: " + name));
+        return operatorRepository.findOperatorEntityByName(name)
+                .orElseThrow(() -> exceptionFactory.createNotFoundException("Operator", "name: " + name));
     }
     
     @Override

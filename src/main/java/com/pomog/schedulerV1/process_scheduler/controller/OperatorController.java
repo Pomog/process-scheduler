@@ -24,7 +24,7 @@ public class OperatorController {
     /**
      * Retrieves an operator by name.
      * @param name the name of the operator to retrieve
-     * @return the response containing the operator data
+     * @return the response containing the operator data, and timeStamp
      * @throws ResourceNotFoundException if no operator with the given name is found
      */
     @GetMapping("/{operatorName}")
