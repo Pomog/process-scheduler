@@ -10,10 +10,11 @@ import com.pomog.schedulerV1.process_scheduler.repository.SettingsRepository;
 import com.pomog.schedulerV1.process_scheduler.repository.SkillRepository;
 import com.pomog.schedulerV1.process_scheduler.response.Response;
 import com.pomog.schedulerV1.process_scheduler.response.ResponseFactory;
-import org.springframework.http.HttpStatus;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class OperatorServiceImpl extends BaseService<OperatorDTO> implements OperatorService {
@@ -21,42 +22,38 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     private final SettingsRepository settingsRepository;
     private final SkillRepository skillRepository;
     private final ExceptionFactory exceptionFactory;
-    
     private final OperatorDTOFactory operatorDTOFactory;
     private final ResponseFactory responseFactory;
+    private final MessageSource messageSource;
     
-    public OperatorServiceImpl(OperatorRepository operatorRepository,
-                               SettingsRepository settingsRepository,
-                               SkillRepository skillRepository,
-                               ExceptionFactory exceptionFactory, OperatorDTOFactory operatorDTOFactory, ResponseFactory responseFactory) {
+    public OperatorServiceImpl(OperatorRepository operatorRepository, SettingsRepository settingsRepository, SkillRepository skillRepository, ExceptionFactory exceptionFactory, OperatorDTOFactory operatorDTOFactory, ResponseFactory responseFactory, MessageSource messageSource) {
         this.operatorRepository = operatorRepository;
         this.settingsRepository = settingsRepository;
         this.skillRepository = skillRepository;
         this.exceptionFactory = exceptionFactory;
         this.operatorDTOFactory = operatorDTOFactory;
         this.responseFactory = responseFactory;
+        this.messageSource = messageSource;
     }
-    
     
     @Override
     public Response<OperatorDTO> getResponseSaveOperator(OperatorEntity operatorEntity) {
-        OperatorDTO operatorDTO = operatorDTOFactory.createFromEntity(saveOperatorEntity(operatorEntity));
-        return responseFactory.createCreatedResponse("Operator saved successfully", operatorDTO);
+        OperatorDTO operatorDTO = operatorDTOFactory.createFromEntity(saveOperator(operatorEntity));
+        return responseFactory.createCreatedResponse(getSuccessMessage("operator.save.success"), operatorDTO);
     }
     
-    protected OperatorEntity saveOperatorEntity(OperatorEntity operatorEntity) {
+    protected OperatorEntity saveOperator(OperatorEntity operatorEntity) {
         return operatorRepository.save(operatorEntity);
     }
     
     @Override
     public Response<OperatorDTO> getResponseFetchOperatorByName(String name) {
         OperatorDTO operatorDTO = operatorDTOFactory.createFromEntity(fetchOperatorEntity(name));
-        return responseFactory.createSuccessResponse("Operator found successfully", operatorDTO);
+        return responseFactory.createSuccessResponse(getSuccessMessage("operator.fetch.success"), operatorDTO);
     }
     
     protected OperatorEntity fetchOperatorEntity(String name) {
-        return operatorRepository.findOperatorEntityByName(name)
-                .orElseThrow(() -> exceptionFactory.createNotFoundException("Operator", "name: " + name));
+        return operatorRepository.findOperatorEntityByName(name).orElseThrow(() -> exceptionFactory.createNotFoundException("Operator", "name: " + name));
     }
     
     @Override
@@ -77,5 +74,9 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     @Override
     public Response<List<SkillDTO>> findOperatorEntitiesBySkillEntities_ProcessName(String processName) {
         return null;
+    }
+    
+    protected String getSuccessMessage(String key) {
+        return messageSource.getMessage(key, null, Locale.getDefault());
     }
 }
