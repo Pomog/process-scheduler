@@ -41,7 +41,7 @@ public class OperatorController {
     
     @GetMapping("/weekend-shift/{prefersWeekendShift}")
     public Response<List<OperatorDTO>> getOperatorsByWeekendShiftPreference(@PathVariable boolean prefersWeekendShift){
-        return operatorService.getResponseWithOperatorsPreferringNightShift(prefersWeekendShift);
+        return operatorService.getResponseWithOperatorsPreferringWeekendShift(prefersWeekendShift);
     }
     
 }
