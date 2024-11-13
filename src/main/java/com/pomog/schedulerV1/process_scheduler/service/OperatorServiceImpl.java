@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
 
 @Service
 public class OperatorServiceImpl extends BaseService<OperatorDTO> implements OperatorService {
@@ -56,37 +57,31 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
         return operatorRepository.findOperatorEntityByName(name)
                 .orElseThrow(() -> exceptionFactory.createNotFoundException("Operator", "name: " + name));
     }
+    @Override
+    public Response<List<OperatorDTO>> getResponseWithOperatorsPreferringNightShift(boolean prefersNightShift) {
+        return findOperatorsByPreference(prefersNightShift, this::fetchOperatorEntityByPreferringNightShifts);
+    }
     
     @Override
-    public Response<List<OperatorDTO>> findOperatorEntitiesByPrefersNight(boolean prefersNightShift) {
-        List<OperatorDTO> operatorDTOs = getOperatorDTOsPreferringNightShift(prefersNightShift);
+    public Response<List<OperatorDTO>> getResponseWithOperatorsPreferringWeekendShift(boolean prefersWeekendShift) {
+        return findOperatorsByPreference(prefersWeekendShift, this::fetchOperatorEntityByPreferringWeekendShift);
+    }
+
+    protected Response<List<OperatorDTO>> findOperatorsByPreference(boolean prefersShift, Function<Boolean, List<OperatorEntity>> fetchFunction) {
+        List<OperatorDTO> operatorDTOs = mapOperatorEntitiesToDTOs(prefersShift, fetchFunction);
         return operatorDTOs.isEmpty()
                 ? responseFactory.createSuccessResponse(getSuccessMessage("operators.fetch.empty"), operatorDTOs)
                 : responseFactory.createSuccessResponse(getSuccessMessage("operators.fetch.success"), operatorDTOs);
     }
     
-    protected List<OperatorDTO> getOperatorDTOsPreferringNightShift(boolean prefersNightShift) {
-        return fetchOperatorEntityByPreferringNightShifts(prefersNightShift).stream()
+    protected List<OperatorDTO> mapOperatorEntitiesToDTOs(boolean prefersShift, Function<Boolean, List<OperatorEntity>> fetchFunction) {
+        return fetchFunction.apply(prefersShift).stream()
                 .map(OperatorDTO::new)
                 .toList();
     }
     
     protected List<OperatorEntity> fetchOperatorEntityByPreferringNightShifts(boolean preferNightShift) {
         return operatorRepository.findOperatorEntitiesByPrefersNight(preferNightShift);
-    }
-    
-    @Override
-    public Response<List<OperatorDTO>> findOperatorEntitiesByPrefersWeekend(boolean preferWeekendShift) {
-        List<OperatorDTO> operatorDTOs = getOperatorDTOsPreferringWeekendShift(preferWeekendShift);
-        return operatorDTOs.isEmpty()
-                ? responseFactory.createSuccessResponse(getSuccessMessage("operators.fetch.empty"), operatorDTOs)
-                : responseFactory.createSuccessResponse(getSuccessMessage("operators.fetch.success"), operatorDTOs);
-    }
-    
-    protected List<OperatorDTO> getOperatorDTOsPreferringWeekendShift(boolean prefersWeekendShift) {
-        return fetchOperatorEntityByPreferringWeekendShift(prefersWeekendShift).stream()
-                .map(OperatorDTO::new)
-                .toList();
     }
     
     protected List<OperatorEntity> fetchOperatorEntityByPreferringWeekendShift(boolean preferNightShift) {
