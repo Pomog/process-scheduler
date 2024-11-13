@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
     //   Catches errors when a method argument type does not match
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Response<String>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        Response<String> response = new Response<>(HttpStatus.BAD_REQUEST.value(), "Wrong ID format", ex.getParameter().toString());
+        Response<String> response = new Response<>(HttpStatus.BAD_REQUEST.value(), "Wrong input format", ex.getParameter().toString());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
     

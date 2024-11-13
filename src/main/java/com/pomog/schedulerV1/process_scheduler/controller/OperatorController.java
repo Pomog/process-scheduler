@@ -7,6 +7,8 @@ import com.pomog.schedulerV1.process_scheduler.service.OperatorService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/operator")
 public class OperatorController {
@@ -31,4 +33,15 @@ public class OperatorController {
     public Response<OperatorDTO> findOperatorByName(@PathVariable String operatorName){
         return operatorService.getResponseFetchOperatorByName(operatorName);
     }
+    
+    @GetMapping("/night-shift/{prefersNightShift}")
+    public Response<List<OperatorDTO>> getOperatorsByNightShiftPreference(@PathVariable boolean prefersNightShift){
+        return operatorService.findOperatorEntitiesByPrefersNight(prefersNightShift);
+    }
+    
+    @GetMapping("/weekend-shift/{prefersWeekendShift}")
+    public Response<List<OperatorDTO>> getOperatorsByWeekendShiftPreference(@PathVariable boolean prefersWeekendShift){
+        return operatorService.findOperatorEntitiesByPrefersWeekend(prefersWeekendShift);
+    }
+    
 }
