@@ -13,9 +13,9 @@ public interface OperatorService {
     
     Response<OperatorDTO> getResponseFetchOperatorByName(String name);
     
-    Response<List<OperatorDTO>> getResponseWithOperatorsPreferringNightShift(boolean preferNights);
+    Response<List<OperatorDTO>> getResponseForOperatorsPreferringNightShift (boolean preferNights);
     
-    Response<List<OperatorDTO>> getResponseWithOperatorsPreferringWeekendShift(boolean preferWeekends);
+    Response<List<OperatorDTO>> getResponseForOperatorsPreferringWeekendShift(boolean preferWeekends);
     
     
     Response<List<SkillDTO>> findOperatorEntitiesBySkillEntities_ProcessName(String processName);

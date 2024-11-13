@@ -58,18 +58,13 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     }
     
     @Override
-    public Response<List<OperatorDTO>> getResponseWithOperatorsPreferringNightShift(boolean prefersNightShift) {
-        return getOperatorsByShiftPreference(prefersNightShift, ShiftType.NIGHT);
+    public Response<List<OperatorDTO>> getResponseForOperatorsPreferringNightShift (boolean prefersNightShift) {
+        return createResponseForList(getOperatorDTOsByShiftPreference(prefersNightShift, ShiftType.NIGHT));
     }
     
     @Override
-    public Response<List<OperatorDTO>> getResponseWithOperatorsPreferringWeekendShift(boolean prefersWeekendShift) {
-        return getOperatorsByShiftPreference(prefersWeekendShift, ShiftType.WEEKEND);
-    }
-    
-    protected Response<List<OperatorDTO>> getOperatorsByShiftPreference(boolean prefersShift, ShiftType shiftType) {
-        List<OperatorDTO> operatorDTOs = fetchAndMapOperatorEntitiesToDTOs(prefersShift, shiftType);
-        return createResponseForList(operatorDTOs);
+    public Response<List<OperatorDTO>> getResponseForOperatorsPreferringWeekendShift(boolean prefersWeekendShift) {
+        return createResponseForList(getOperatorDTOsByShiftPreference(prefersWeekendShift, ShiftType.WEEKEND));
     }
     
     protected Response<List<OperatorDTO>> createResponseForList(List<OperatorDTO> operatorDTOs) {
@@ -78,17 +73,17 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
                 : responseFactory.createSuccessResponse(getSuccessMessage("operators.fetch.success"), operatorDTOs);
     }
     
-    protected List<OperatorDTO> fetchAndMapOperatorEntitiesToDTOs(boolean prefersShift, ShiftType shiftType) {
-        return fetchOperatorEntitiesByShiftType(prefersShift, shiftType).stream()
+    protected List<OperatorDTO> getOperatorDTOsByShiftPreference(boolean prefersShift, ShiftType shiftType) {
+        return fetchOperatorEntitiesByShiftPreference(prefersShift, shiftType).stream()
                 .map(OperatorDTO::new)
                 .toList();
     }
     
-    protected List<OperatorEntity> fetchOperatorEntitiesByShiftType(boolean prefersShift, ShiftType shiftType) {
+    protected List<OperatorEntity> fetchOperatorEntitiesByShiftPreference(boolean prefersShift, ShiftType shiftType) {
         return switch (shiftType) {
             case NIGHT -> operatorRepository.findOperatorEntitiesByPrefersNight(prefersShift);
             case WEEKEND -> operatorRepository.findOperatorEntitiesByPrefersWeekend(prefersShift);
-            default -> List.of();
+            default ->  throw exceptionFactory.createUnsupportedShiftTypeException(shiftType.toString());
         };
     }
     
