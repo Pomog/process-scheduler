@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Function;
 
 @Service
 public class OperatorServiceImpl extends BaseService<OperatorDTO> implements OperatorService {
@@ -53,23 +52,27 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
         return responseFactory.createSuccessResponse(getSuccessMessage("operator.fetch.success"), operatorDTO);
     }
     
-    @Override
-    public Response<List<OperatorDTO>> getResponseWithOperatorsPreferringNightShift(boolean prefersNightShift) {
-        return findOperatorsByPreference(prefersNightShift, ShiftType.NIGHT);
-    }
-    
-    @Override
-    public Response<List<OperatorDTO>> getResponseWithOperatorsPreferringWeekendShift(boolean prefersWeekendShift) {
-        return findOperatorsByPreference(prefersWeekendShift, ShiftType.WEEKEND);
-    }
-    
     protected OperatorEntity fetchOperatorEntityByName(String name) {
         return operatorRepository.findOperatorEntityByName(name)
                 .orElseThrow(() -> exceptionFactory.createNotFoundException("Operator", "name: " + name));
     }
     
-    protected Response<List<OperatorDTO>> findOperatorsByPreference(boolean prefersShift, ShiftType shiftType) {
+    @Override
+    public Response<List<OperatorDTO>> getResponseWithOperatorsPreferringNightShift(boolean prefersNightShift) {
+        return getOperatorsByShiftPreference(prefersNightShift, ShiftType.NIGHT);
+    }
+    
+    @Override
+    public Response<List<OperatorDTO>> getResponseWithOperatorsPreferringWeekendShift(boolean prefersWeekendShift) {
+        return getOperatorsByShiftPreference(prefersWeekendShift, ShiftType.WEEKEND);
+    }
+    
+    protected Response<List<OperatorDTO>> getOperatorsByShiftPreference(boolean prefersShift, ShiftType shiftType) {
         List<OperatorDTO> operatorDTOs = fetchAndMapOperatorEntitiesToDTOs(prefersShift, shiftType);
+        return createResponseForList(operatorDTOs);
+    }
+    
+    protected Response<List<OperatorDTO>> createResponseForList(List<OperatorDTO> operatorDTOs) {
         return operatorDTOs.isEmpty()
                 ? responseFactory.createSuccessResponse(getSuccessMessage("operators.fetch.empty"), operatorDTOs)
                 : responseFactory.createSuccessResponse(getSuccessMessage("operators.fetch.success"), operatorDTOs);
@@ -87,11 +90,6 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
             case WEEKEND -> operatorRepository.findOperatorEntitiesByPrefersWeekend(prefersShift);
             default -> List.of();
         };
-    }
-    
-    @Override
-    public Response<List<OperatorDTO>> findOperatorEntitiesBySkillEntities_ProcessNameAndSkillEntities_StepName(String processName, String stepName) {
-        return null;
     }
     
     @Override
