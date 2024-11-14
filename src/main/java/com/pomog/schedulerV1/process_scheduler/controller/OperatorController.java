@@ -44,4 +44,9 @@ public class OperatorController {
         return operatorService.getResponseForOperatorsPreferringWeekendShift (prefersWeekendShift);
     }
     
+    @GetMapping("/all")
+    public Response<List<OperatorDTO>> getAllOperators () {
+        return operatorService.getResponseForAllOperators();
+    }
+    
 }

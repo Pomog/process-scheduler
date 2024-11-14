@@ -39,7 +39,7 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     @Override
     public Response<OperatorDTO> getResponseSaveOperator(OperatorEntity operatorEntity) {
         OperatorDTO operatorDTO = operatorDTOFactory.createFromEntity(saveOperator(operatorEntity));
-        return responseFactory.createCreatedResponse(getSuccessMessage("operator.save.success"), operatorDTO);
+        return responseFactory.buildCreatedResponse(getSuccessMessage("operator.save.success"), operatorDTO);
     }
     
     protected OperatorEntity saveOperator(OperatorEntity operatorEntity) {
@@ -49,11 +49,11 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     @Override
     public Response<OperatorDTO> getResponseFetchOperatorByName(String name) {
         OperatorDTO operatorDTO = operatorDTOFactory.createFromEntity(fetchOperatorEntityByName(name));
-        return responseFactory.createSuccessResponse(getSuccessMessage("operator.fetch.success"), operatorDTO);
+        return responseFactory.buildSuccessResponse(getSuccessMessage("operator.fetch.success"), operatorDTO);
     }
     
     protected OperatorEntity fetchOperatorEntityByName(String name) {
-        return operatorRepository.findOperatorEntityByName(name)
+        return operatorRepository.findOperatorEntityByNameIgnoreCase(name)
                 .orElseThrow(() -> exceptionFactory.createNotFoundException("Operator", "name: " + name));
     }
     
@@ -67,15 +67,22 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
         return createResponseForList(getOperatorDTOsByShiftPreference(prefersWeekendShift, ShiftType.WEEKEND));
     }
     
+    @Override
+    public Response<List<OperatorDTO>> getResponseForAllOperators() {
+       return createResponseForList(operatorRepository.findAll().stream()
+                .map(operatorDTOFactory::createFromEntity)
+                .toList());
+    }
+    
     protected Response<List<OperatorDTO>> createResponseForList(List<OperatorDTO> operatorDTOs) {
         return operatorDTOs.isEmpty()
-                ? responseFactory.createSuccessResponse(getSuccessMessage("operators.fetch.empty"), operatorDTOs)
-                : responseFactory.createSuccessResponse(getSuccessMessage("operators.fetch.success"), operatorDTOs);
+                ? responseFactory.buildSuccessResponse(getSuccessMessage("operators.fetch.empty"), operatorDTOs)
+                : responseFactory.buildSuccessResponse(getSuccessMessage("operators.fetch.success"), operatorDTOs);
     }
     
     protected List<OperatorDTO> getOperatorDTOsByShiftPreference(boolean prefersShift, ShiftType shiftType) {
         return fetchOperatorEntitiesByShiftPreference(prefersShift, shiftType).stream()
-                .map(OperatorDTO::new)
+                .map(operatorDTOFactory::createFromEntity)
                 .toList();
     }
     

@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface OperatorRepository extends JpaRepository<OperatorEntity, UUID> {
 
     // https://www.bezkoder.com/jpa-many-to-many/
-    Optional<OperatorEntity> findOperatorEntityByName(String name);
+    Optional<OperatorEntity> findOperatorEntityByNameIgnoreCase(String name);
 
     List<OperatorEntity> findOperatorEntitiesByPrefersNight(boolean preferNights);
 

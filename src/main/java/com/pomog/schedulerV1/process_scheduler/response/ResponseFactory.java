@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ResponseFactory {
-    public <T> Response<T> createSuccessResponse(String message, T data) {
+    public <T> Response<T> buildSuccessResponse(String message, T data) {
         return Response.<T>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message(message)
@@ -13,7 +13,7 @@ public class ResponseFactory {
                 .build();
     }
     
-    public <T> Response<T> createCreatedResponse(String message, T data) {
+    public <T> Response<T> buildCreatedResponse(String message, T data) {
         return Response.<T>builder()
                 .statusCode(HttpStatus.CREATED.value())
                 .message(message)
