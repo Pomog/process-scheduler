@@ -21,6 +21,13 @@ public class ResponseFactory {
                 .build();
     }
     
+    public <T> Response<T> createDeleteSingleResponse(String message) {
+        return Response.<T>builder()
+                .statusCode(HttpStatus.NO_CONTENT.value())
+                .message(message)
+                .build();
+    }
+    
     public <T> Response<T> createErrorResponse(String message, HttpStatus status) {
         return Response.<T>builder()
                 .statusCode(status.value())

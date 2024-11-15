@@ -13,6 +13,8 @@ public interface OperatorRepository extends JpaRepository<OperatorEntity, UUID> 
 
     // https://www.bezkoder.com/jpa-many-to-many/
     Optional<OperatorEntity> findOperatorEntityByNameIgnoreCase(String name);
+    
+    void deleteOperatorEntityByName(String name);
 
     List<OperatorEntity> findOperatorEntitiesByPrefersNight(boolean preferNights);
 

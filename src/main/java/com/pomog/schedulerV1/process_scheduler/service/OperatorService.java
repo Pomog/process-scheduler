@@ -6,6 +6,7 @@ import com.pomog.schedulerV1.process_scheduler.entity.OperatorEntity;
 import com.pomog.schedulerV1.process_scheduler.response.Response;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface OperatorService {
     
@@ -19,6 +20,9 @@ public interface OperatorService {
     
     Response<List<OperatorDTO>> getResponseForAllOperators();
     
+    Response<Void> getResponseForDeleteOperatorByID(UUID id);
+    
     Response<List<SkillDTO>> findOperatorEntitiesBySkillEntities_ProcessName(String processName);
     
+    Response<Void> getResponseForDeleteOperatorByName(String name);
 }

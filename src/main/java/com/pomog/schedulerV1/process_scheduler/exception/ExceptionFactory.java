@@ -14,4 +14,9 @@ public class ExceptionFactory {
         String message = String.format("Unsupported shift type: %s", shiftType);
         return new IllegalArgumentException(message);
     }
+    
+    public IllegalArgumentException createErrorAbsentIDorEmail() {
+        String message = "Either 'id' or 'name' must be provided.";
+        return new IllegalArgumentException(message);
+    }
 }

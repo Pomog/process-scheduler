@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 @Service
 public class OperatorServiceImpl extends BaseService<OperatorDTO> implements OperatorService {
@@ -72,6 +73,18 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
        return createResponseForList(operatorRepository.findAll().stream()
                 .map(operatorDTOFactory::createFromEntity)
                 .toList());
+    }
+    
+    @Override
+    public Response<Void> getResponseForDeleteOperatorByID(UUID id) {
+        operatorRepository.deleteById(id);
+        return responseFactory.createDeleteSingleResponse(getSuccessMessage("operators.delete.success"));
+    }
+    
+    @Override
+    public Response<Void> getResponseForDeleteOperatorByName(String name) {
+        operatorRepository.deleteOperatorEntityByName(name);
+        return responseFactory.createDeleteSingleResponse(getSuccessMessage("operators.delete.success"));
     }
     
     protected Response<List<OperatorDTO>> createResponseForList(List<OperatorDTO> operatorDTOs) {
