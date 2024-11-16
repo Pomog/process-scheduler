@@ -18,6 +18,8 @@ public interface OperatorService {
     
     Response<List<OperatorDTO>> getResponseForOperatorsPreferringWeekendShift(boolean preferWeekends);
     
+    Response<OperatorDTO> getResponseUpdateOperator (UUID id, OperatorEntity operatorEntity);
+    
     Response<List<OperatorDTO>> getResponseForAllOperators();
     
     Response<Void> getResponseForDeleteOperatorByID(UUID id);

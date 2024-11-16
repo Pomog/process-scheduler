@@ -59,7 +59,7 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     }
     
     @Override
-    public Response<List<OperatorDTO>> getResponseForOperatorsPreferringNightShift (boolean prefersNightShift) {
+    public Response<List<OperatorDTO>> getResponseForOperatorsPreferringNightShift(boolean prefersNightShift) {
         return createResponseForList(getOperatorDTOsByShiftPreference(prefersNightShift, ShiftType.NIGHT));
     }
     
@@ -69,8 +69,20 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     }
     
     @Override
+    public Response<OperatorDTO> getResponseUpdateOperator(UUID id, OperatorEntity operatorEntity) {
+        OperatorEntity _operatorEntity = operatorRepository.findById(id)
+                .orElseThrow(() -> exceptionFactory.createNotFoundException("Operator", "ID: " + id.toString()));
+        
+        _operatorEntity.setSettingsEntity(operatorEntity.getSettingsEntity());
+        
+        operatorEntity.getSkillEntities().forEach(_operatorEntity::addSkill);
+        
+        return getResponseSaveOperator(_operatorEntity);
+    }
+    
+    @Override
     public Response<List<OperatorDTO>> getResponseForAllOperators() {
-       return createResponseForList(operatorRepository.findAll().stream()
+        return createResponseForList(operatorRepository.findAll().stream()
                 .map(operatorDTOFactory::createFromEntity)
                 .toList());
     }
@@ -103,7 +115,7 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
         return switch (shiftType) {
             case NIGHT -> operatorRepository.findOperatorEntitiesByPrefersNight(prefersShift);
             case WEEKEND -> operatorRepository.findOperatorEntitiesByPrefersWeekend(prefersShift);
-            default ->  throw exceptionFactory.createUnsupportedShiftTypeException(shiftType.toString());
+            default -> throw exceptionFactory.createUnsupportedShiftTypeException(shiftType.toString());
         };
     }
     

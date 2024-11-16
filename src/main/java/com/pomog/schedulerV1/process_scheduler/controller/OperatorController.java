@@ -40,27 +40,28 @@ public class OperatorController {
     
     /**
      * Retrieves an operator by name.
-     * @param name the name of the operator to retrieve
+     *
+     * @param operatorName the name of the operator to retrieve
      * @return the response containing the operator data, and timeStamp
      * @throws ResourceNotFoundException if no operator with the given name is found
      */
     @GetMapping("/{operatorName}")
-    public Response<OperatorDTO> findOperatorByName(@PathVariable String operatorName){
+    public Response<OperatorDTO> findOperatorByName(@PathVariable String operatorName) {
         return operatorService.getResponseFetchOperatorByName(operatorName);
     }
     
     @GetMapping("/night-shift/{prefersNightShift}")
-    public Response<List<OperatorDTO>> getOperatorsByNightShiftPreference(@PathVariable boolean prefersNightShift){
+    public Response<List<OperatorDTO>> getOperatorsByNightShiftPreference(@PathVariable boolean prefersNightShift) {
         return operatorService.getResponseForOperatorsPreferringNightShift(prefersNightShift);
     }
     
     @GetMapping("/weekend-shift/{prefersWeekendShift}")
-    public Response<List<OperatorDTO>> getOperatorsByWeekendShiftPreference(@PathVariable boolean prefersWeekendShift){
-        return operatorService.getResponseForOperatorsPreferringWeekendShift (prefersWeekendShift);
+    public Response<List<OperatorDTO>> getOperatorsByWeekendShiftPreference(@PathVariable boolean prefersWeekendShift) {
+        return operatorService.getResponseForOperatorsPreferringWeekendShift(prefersWeekendShift);
     }
     
     @GetMapping("/all")
-    public Response<List<OperatorDTO>> getAllOperators () {
+    public Response<List<OperatorDTO>> getAllOperators() {
         return operatorService.getResponseForAllOperators();
     }
     
@@ -74,5 +75,10 @@ public class OperatorController {
                 .map(entry -> deleteHandlers.get(entry.getKey()).apply(entry.getValue()))
                 .orElseThrow(exceptionFactory::createErrorAbsentIDorEmail);
     }
-
+    
+    @PutMapping("/{id}")
+    public Response<OperatorDTO> updateOperator(@PathVariable("id") UUID id, @RequestBody OperatorEntity operatorEntity) {
+        return null;
+    }
+    
 }
