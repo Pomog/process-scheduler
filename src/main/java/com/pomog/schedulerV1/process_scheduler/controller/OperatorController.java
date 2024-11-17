@@ -78,7 +78,7 @@ public class OperatorController {
     
     @PutMapping("/{id}")
     public Response<OperatorDTO> updateOperator(@PathVariable("id") UUID id, @RequestBody OperatorEntity operatorEntity) {
-        return null;
+        return operatorService.getResponseUpdateOperator(id, operatorEntity);
     }
     
 }
