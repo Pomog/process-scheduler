@@ -28,7 +28,7 @@ public class OperatorEntity {
     @NonNull
     private String name;
     
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JoinColumn(name = "settings")
     private SettingsEntity settingsEntity;
     

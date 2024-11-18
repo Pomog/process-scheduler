@@ -4,6 +4,7 @@ import com.pomog.schedulerV1.process_scheduler.dto.OperatorDTO;
 import com.pomog.schedulerV1.process_scheduler.dto.OperatorDTOFactory;
 import com.pomog.schedulerV1.process_scheduler.dto.SkillDTO;
 import com.pomog.schedulerV1.process_scheduler.entity.OperatorEntity;
+import com.pomog.schedulerV1.process_scheduler.entity.SettingsEntity;
 import com.pomog.schedulerV1.process_scheduler.entity.SkillEntity;
 import com.pomog.schedulerV1.process_scheduler.exception.ExceptionFactory;
 import com.pomog.schedulerV1.process_scheduler.repository.OperatorRepository;
@@ -13,6 +14,7 @@ import com.pomog.schedulerV1.process_scheduler.response.Response;
 import com.pomog.schedulerV1.process_scheduler.response.ResponseFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Locale;
@@ -70,16 +72,10 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     }
     
     @Override
+    @Transactional
     public Response<OperatorDTO> getResponseUpdateOperator(UUID id, OperatorEntity operatorEntity) {
         OperatorEntity existingOperator = operatorRepository.findById(id)
                 .orElseThrow(() -> exceptionFactory.createNotFoundException("Operator", "ID: " + id.toString()));
-        
-        List<SkillEntity> skillEntity = existingOperator.getSkillEntities();
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println(skillEntity);
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
-        
-        System.out.println(operatorEntity);
         
         updateOperatorFields(existingOperator, operatorEntity);
         
@@ -91,17 +87,13 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     
     private void updateOperatorFields(OperatorEntity existing, OperatorEntity provided) {
         existing.setName(provided.getName());
-
         existing.setPrefersNight(provided.isPrefersNight());
-
         existing.setPrefersWeekend(provided.isPrefersWeekend());
         
-        if (provided.getSettingsEntity() != null) {
-            existing.setSettingsEntity(provided.getSettingsEntity());
-        }
-        if (provided.getSkillEntities() != null) {
-            existing.setSkillEntities(provided.getSkillEntities());
-        }
+        SettingsEntity newSettings = settingsRepository.save(provided.getSettingsEntity());
+        
+        existing.setSettingsEntity(newSettings);
+        
     }
     
     @Override
