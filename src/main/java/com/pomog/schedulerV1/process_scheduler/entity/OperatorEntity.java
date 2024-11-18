@@ -1,6 +1,7 @@
 package com.pomog.schedulerV1.process_scheduler.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -26,6 +27,7 @@ public class OperatorEntity {
     
     @Column(name = "name")
     @NonNull
+    @NotBlank
     private String name;
     
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)

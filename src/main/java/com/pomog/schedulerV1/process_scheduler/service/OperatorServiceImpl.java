@@ -5,7 +5,6 @@ import com.pomog.schedulerV1.process_scheduler.dto.OperatorDTOFactory;
 import com.pomog.schedulerV1.process_scheduler.dto.SkillDTO;
 import com.pomog.schedulerV1.process_scheduler.entity.OperatorEntity;
 import com.pomog.schedulerV1.process_scheduler.entity.SettingsEntity;
-import com.pomog.schedulerV1.process_scheduler.entity.SkillEntity;
 import com.pomog.schedulerV1.process_scheduler.exception.ExceptionFactory;
 import com.pomog.schedulerV1.process_scheduler.repository.OperatorRepository;
 import com.pomog.schedulerV1.process_scheduler.repository.SettingsRepository;
@@ -90,9 +89,13 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
         existing.setPrefersNight(provided.isPrefersNight());
         existing.setPrefersWeekend(provided.isPrefersWeekend());
         
-        SettingsEntity newSettings = settingsRepository.save(provided.getSettingsEntity());
+        if (provided.getSettingsEntity() != null) {
+            SettingsEntity newSettings = settingsRepository.save(provided.getSettingsEntity());
+            existing.setSettingsEntity(newSettings);
+        }
         
-        existing.setSettingsEntity(newSettings);
+        // TODO update Skills
+        
         
     }
     
