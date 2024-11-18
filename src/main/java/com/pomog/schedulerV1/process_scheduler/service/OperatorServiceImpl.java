@@ -4,7 +4,6 @@ import com.pomog.schedulerV1.process_scheduler.dto.OperatorDTO;
 import com.pomog.schedulerV1.process_scheduler.dto.OperatorDTOFactory;
 import com.pomog.schedulerV1.process_scheduler.dto.SkillDTO;
 import com.pomog.schedulerV1.process_scheduler.entity.OperatorEntity;
-import com.pomog.schedulerV1.process_scheduler.entity.SettingsEntity;
 import com.pomog.schedulerV1.process_scheduler.entity.SkillEntity;
 import com.pomog.schedulerV1.process_scheduler.exception.ExceptionFactory;
 import com.pomog.schedulerV1.process_scheduler.repository.OperatorRepository;
@@ -12,7 +11,6 @@ import com.pomog.schedulerV1.process_scheduler.repository.SettingsRepository;
 import com.pomog.schedulerV1.process_scheduler.repository.SkillRepository;
 import com.pomog.schedulerV1.process_scheduler.response.Response;
 import com.pomog.schedulerV1.process_scheduler.response.ResponseFactory;
-import jakarta.persistence.CascadeType;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -73,34 +71,37 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     
     @Override
     public Response<OperatorDTO> getResponseUpdateOperator(UUID id, OperatorEntity operatorEntity) {
-        OperatorEntity _operatorEntity = operatorRepository.findById(id)
+        OperatorEntity existingOperator = operatorRepository.findById(id)
                 .orElseThrow(() -> exceptionFactory.createNotFoundException("Operator", "ID: " + id.toString()));
         
-        if (operatorEntity.getSettingsEntity() != null) {
-            SettingsEntity managedSettings = settingsRepository.findById(operatorEntity.getSettingsEntity().getID())
-                    .orElseThrow(() -> exceptionFactory.createNotFoundException("Settings", "ID: " + operatorEntity.getSettingsEntity().getID().toString()));
-            managedSettings = operatorEntity.getSettingsEntity();
-            _operatorEntity.setSettingsEntity(managedSettings);
-        }
+        List<SkillEntity> skillEntity = existingOperator.getSkillEntities();
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println(skillEntity);
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
         
-        if (!operatorEntity.getSkillEntities().isEmpty()) {
-            List<SkillEntity> managedSkills = operatorEntity.getSkillEntities().stream()
-                    .map(skill -> skillRepository.findById(skill.getID())
-                            .orElseThrow(() -> exceptionFactory.createNotFoundException("Skill", "ID: " + skill.getID().toString())))
-                    .toList();
-            _operatorEntity.setSkillEntities(managedSkills);
-        }
+        System.out.println(operatorEntity);
         
-        _operatorEntity.setName(operatorEntity.getName());
-        _operatorEntity.setPrefersNight(operatorEntity.isPrefersNight());
-        _operatorEntity.setPrefersWeekend(operatorEntity.isPrefersWeekend());
+        updateOperatorFields(existingOperator, operatorEntity);
         
-        // Save the updated entity
-        OperatorEntity updatedOperator = operatorRepository.save(_operatorEntity);
         return responseFactory.buildSuccessResponse(
                 getSuccessMessage("operator.save.success"),
-                new OperatorDTO(updatedOperator)
+                new OperatorDTO(operatorRepository.save(existingOperator))
         );
+    }
+    
+    private void updateOperatorFields(OperatorEntity existing, OperatorEntity provided) {
+        existing.setName(provided.getName());
+
+        existing.setPrefersNight(provided.isPrefersNight());
+
+        existing.setPrefersWeekend(provided.isPrefersWeekend());
+        
+        if (provided.getSettingsEntity() != null) {
+            existing.setSettingsEntity(provided.getSettingsEntity());
+        }
+        if (provided.getSkillEntities() != null) {
+            existing.setSkillEntities(provided.getSkillEntities());
+        }
     }
     
     @Override
