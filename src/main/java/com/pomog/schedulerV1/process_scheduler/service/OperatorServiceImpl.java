@@ -139,8 +139,10 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     }
     
     @Override
-    public Response<List<SkillDTO>> findOperatorEntitiesBySkillEntities_ProcessName(String processName) {
-        return null;
+    public Response<List<OperatorDTO>> findOperatorEntitiesBySkillEntities_ProcessName(String processName) {
+        return createResponseForList(operatorRepository.findOperatorEntitiesBySkillEntities_ProcessName(processName).stream()
+                .map(operatorDTOFactory::createFromEntity)
+                .toList());
     }
     
     protected String getSuccessMessage(String key) {

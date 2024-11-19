@@ -24,7 +24,7 @@ public interface OperatorService {
     
     Response<Void> getResponseForDeleteOperatorByID(UUID id);
     
-    Response<List<SkillDTO>> findOperatorEntitiesBySkillEntities_ProcessName(String processName);
+    Response<List<OperatorDTO>> findOperatorEntitiesBySkillEntities_ProcessName(String processName);
     
     Response<Void> getResponseForDeleteOperatorByName(String name);
 }
