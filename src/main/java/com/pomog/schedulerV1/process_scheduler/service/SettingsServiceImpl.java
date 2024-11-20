@@ -19,6 +19,8 @@ import java.util.stream.StreamSupport;
 public class SettingsServiceImpl extends BaseService<SettingsDTO> implements SettingsService {
     
     private final SettingsRepository settingsRepository;
+    
+    //        TODO implement universal DTO factory
     private final SettingsDTOFactory settingsDTOFactory;
     
     public SettingsServiceImpl(SettingsRepository settingsRepository, ResponseFactory responseFactory, MessageSource messageSource, SettingsDTOFactory settingsDTOFactory) {
@@ -53,7 +55,7 @@ public class SettingsServiceImpl extends BaseService<SettingsDTO> implements Set
     public SettingsEntity updateSettings(SettingsEntity settings, UUID settingsId) {
         SettingsEntity settingsDB = settingsRepository.findById(settingsId)
                 .orElseThrow(() -> new ResourceNotFoundException("Settings with ID " + settingsId + " not found"));
-        
+//        TODO need to check is it worth to use IF
         if (!"".equalsIgnoreCase(settings.getName())) {
             settingsDB.setName(settings.getName());
         }
