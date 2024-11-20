@@ -22,6 +22,5 @@ public interface SettingsService {
     
     // delete operation
     void deleteSettingsById(UUID settingsId);
-    
-    SettingsEntity convertDTOtoEntity (SettingsDTO settingsDTO);
+
 }

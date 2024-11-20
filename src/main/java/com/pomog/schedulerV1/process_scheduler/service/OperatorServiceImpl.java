@@ -2,7 +2,6 @@ package com.pomog.schedulerV1.process_scheduler.service;
 
 import com.pomog.schedulerV1.process_scheduler.dto.OperatorDTO;
 import com.pomog.schedulerV1.process_scheduler.dto.OperatorDTOFactory;
-import com.pomog.schedulerV1.process_scheduler.dto.SkillDTO;
 import com.pomog.schedulerV1.process_scheduler.entity.OperatorEntity;
 import com.pomog.schedulerV1.process_scheduler.entity.SettingsEntity;
 import com.pomog.schedulerV1.process_scheduler.exception.ExceptionFactory;
@@ -30,6 +29,7 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     private final MessageSource messageSource;
     
     public OperatorServiceImpl(OperatorRepository operatorRepository, SettingsRepository settingsRepository, SkillRepository skillRepository, ExceptionFactory exceptionFactory, OperatorDTOFactory operatorDTOFactory, ResponseFactory responseFactory, MessageSource messageSource) {
+        super(responseFactory, messageSource);
         this.operatorRepository = operatorRepository;
         this.settingsRepository = settingsRepository;
         this.skillRepository = skillRepository;
@@ -42,7 +42,7 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     @Override
     public Response<OperatorDTO> getResponseSaveOperator(OperatorEntity operatorEntity) {
         OperatorDTO operatorDTO = operatorDTOFactory.createFromEntity(saveOperator(operatorEntity));
-        return responseFactory.buildCreatedResponse(getSuccessMessage("operator.save.success"), operatorDTO);
+        return buildSuccessResponseToSave(operatorDTO);
     }
     
     protected OperatorEntity saveOperator(OperatorEntity operatorEntity) {
@@ -52,7 +52,7 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     @Override
     public Response<OperatorDTO> getResponseFetchOperatorByName(String name) {
         OperatorDTO operatorDTO = operatorDTOFactory.createFromEntity(fetchOperatorEntityByName(name));
-        return responseFactory.buildSuccessResponse(getSuccessMessage("operator.fetch.success"), operatorDTO);
+        return buildSuccessResponseToGet(operatorDTO);
     }
     
     protected OperatorEntity fetchOperatorEntityByName(String name) {
@@ -78,10 +78,7 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
         
         updateOperatorFields(existingOperator, operatorEntity);
         
-        return responseFactory.buildSuccessResponse(
-                getSuccessMessage("operator.save.success"),
-                new OperatorDTO(operatorRepository.save(existingOperator))
-        );
+        return buildSuccessResponseToSave(new OperatorDTO(operatorRepository.save(existingOperator)));
     }
     
     private void updateOperatorFields(OperatorEntity existing, OperatorEntity provided) {
@@ -118,10 +115,11 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
         return responseFactory.createDeleteSingleResponse(getSuccessMessage("operators.delete.success"));
     }
     
-    protected Response<List<OperatorDTO>> createResponseForList(List<OperatorDTO> operatorDTOs) {
-        return operatorDTOs.isEmpty()
-                ? responseFactory.buildSuccessResponse(getSuccessMessage("operators.fetch.empty"), operatorDTOs)
-                : responseFactory.buildSuccessResponse(getSuccessMessage("operators.fetch.success"), operatorDTOs);
+    @Override
+    public Response<List<OperatorDTO>> findOperatorEntitiesBySkillEntities_ProcessName(String processName) {
+        return createResponseForList(operatorRepository.findOperatorEntitiesBySkillEntities_ProcessName(processName).stream()
+                .map(operatorDTOFactory::createFromEntity)
+                .toList());
     }
     
     protected List<OperatorDTO> getOperatorDTOsByShiftPreference(boolean prefersShift, ShiftType shiftType) {
@@ -136,13 +134,6 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
             case WEEKEND -> operatorRepository.findOperatorEntitiesByPrefersWeekend(prefersShift);
             default -> throw exceptionFactory.createUnsupportedShiftTypeException(shiftType.toString());
         };
-    }
-    
-    @Override
-    public Response<List<OperatorDTO>> findOperatorEntitiesBySkillEntities_ProcessName(String processName) {
-        return createResponseForList(operatorRepository.findOperatorEntitiesBySkillEntities_ProcessName(processName).stream()
-                .map(operatorDTOFactory::createFromEntity)
-                .toList());
     }
     
     protected String getSuccessMessage(String key) {

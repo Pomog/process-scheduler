@@ -2,43 +2,51 @@ package com.pomog.schedulerV1.process_scheduler.service;
 
 
 import com.pomog.schedulerV1.process_scheduler.dto.SettingsDTO;
+import com.pomog.schedulerV1.process_scheduler.dto.SettingsDTOFactory;
 import com.pomog.schedulerV1.process_scheduler.entity.SettingsEntity;
 import com.pomog.schedulerV1.process_scheduler.exception.ResourceNotFoundException;
 import com.pomog.schedulerV1.process_scheduler.repository.SettingsRepository;
 import com.pomog.schedulerV1.process_scheduler.response.Response;
+import com.pomog.schedulerV1.process_scheduler.response.ResponseFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.StreamSupport;
 
 @Service
 public class SettingsServiceImpl extends BaseService<SettingsDTO> implements SettingsService {
     
     private final SettingsRepository settingsRepository;
+    private final SettingsDTOFactory settingsDTOFactory;
     
-    public SettingsServiceImpl(SettingsRepository settingsRepository) {
+    public SettingsServiceImpl(SettingsRepository settingsRepository, ResponseFactory responseFactory, MessageSource messageSource, SettingsDTOFactory settingsDTOFactory) {
+        super(responseFactory, messageSource);
         this.settingsRepository = settingsRepository;
+        this.settingsDTOFactory = settingsDTOFactory;
     }
     
     @Override
     public Response<SettingsDTO> saveSettings(SettingsEntity settings) {
-        SettingsEntity savedSettings = settingsRepository.save(settings);
-        return generateResponse(201, "Created", new SettingsDTO(savedSettings));
+        SettingsDTO savedSettingsDTO= settingsDTOFactory.createFromEntity(settingsRepository.save(settings));
+        return buildSuccessResponseToSave(savedSettingsDTO);
     }
     
     @Override
     public Response<List<SettingsDTO>> fetchSettingsList() {
-        List<SettingsEntity> settingsEntities = (List<SettingsEntity>) settingsRepository.findAll();
-        List<SettingsDTO> responseData = settingsEntities.stream().
-                map(SettingsDTO::new).toList();
-        return new Response<>(200, "OK", responseData);
+        List<SettingsDTO> foundData = StreamSupport.stream(settingsRepository.findAll().spliterator(), false)
+                .map(SettingsDTO::new)
+                .toList();
+
+        return createResponseForList(foundData);
     }
     
     @Override
     public Response<SettingsDTO> findById(UUID settingsId) {
         SettingsEntity foundSettings = settingsRepository.findById(settingsId).
                 orElseThrow(() -> new ResourceNotFoundException("settings with " + settingsId + " not found"));
-        return generateResponse(200, "OK", new SettingsDTO(foundSettings));
+        return buildSuccessResponseToGet(new SettingsDTO(foundSettings));
     }
     
     @Override
@@ -69,15 +77,5 @@ public class SettingsServiceImpl extends BaseService<SettingsDTO> implements Set
     public void deleteSettingsById(UUID settingsId) {
         settingsRepository.deleteById(settingsId);
     }
-    
-    @Override
-    public SettingsEntity convertDTOtoEntity(SettingsDTO settingsDTO) {
-        SettingsEntity settingsEntity = new SettingsEntity();
-        settingsEntity.setName(settingsDTO.getName());
-        settingsEntity.setNormalHours(settingsDTO.getNormalHours());
-        settingsEntity.setNightCoefficient(settingsDTO.getNightCoefficient());
-        settingsEntity.setWeekendCoefficient(settingsDTO.getWeekendCoefficient());
-        
-        return settingsEntity;
-    }
+
 }
