@@ -4,6 +4,7 @@ package com.pomog.schedulerV1.process_scheduler.service;
 import com.pomog.schedulerV1.process_scheduler.dto.SettingsDTO;
 import com.pomog.schedulerV1.process_scheduler.dto.SettingsDTOFactory;
 import com.pomog.schedulerV1.process_scheduler.entity.SettingsEntity;
+import com.pomog.schedulerV1.process_scheduler.exception.ExceptionFactory;
 import com.pomog.schedulerV1.process_scheduler.exception.ResourceNotFoundException;
 import com.pomog.schedulerV1.process_scheduler.repository.SettingsRepository;
 import com.pomog.schedulerV1.process_scheduler.response.Response;
@@ -17,30 +18,31 @@ import java.util.stream.StreamSupport;
 
 @Service
 public class SettingsServiceImpl extends BaseService<SettingsEntity, SettingsDTO> implements SettingsService {
-    
     private final SettingsRepository settingsRepository;
     private final SettingsDTOFactory dtoFactory;
+    private final ExceptionFactory exceptionFactory;
     
     public SettingsServiceImpl(
             SettingsRepository settingsRepository,
             ResponseFactory responseFactory,
             MessageSource messageSource,
-            SettingsDTOFactory dtoFactory) {
+            SettingsDTOFactory dtoFactory,
+            ExceptionFactory exceptionFactory
+    ) {
         super(responseFactory, messageSource, dtoFactory);
         this.settingsRepository = settingsRepository;
         this.dtoFactory = dtoFactory;
-        //        TODO implement universal DTO factory
-        
+        this.exceptionFactory = exceptionFactory;
     }
     
     @Override
-    public Response<SettingsDTO> saveSettings(SettingsEntity settings) {
+    public Response<SettingsDTO> getResponseSave(SettingsEntity settings) {
         SettingsDTO savedSettingsDTO = dtoFactory.createFromEntity(settingsRepository.save(settings));
         return buildSuccessResponseToSave(savedSettingsDTO);
     }
     
     @Override
-    public Response<List<SettingsDTO>> fetchSettingsList() {
+    public Response<List<SettingsDTO>> getResponseFetchAll() {
         List<SettingsDTO> foundData = StreamSupport.stream(settingsRepository.findAll().spliterator(), false)
                 .map(this::convertToDTO)
                 .toList();
@@ -49,27 +51,35 @@ public class SettingsServiceImpl extends BaseService<SettingsEntity, SettingsDTO
     }
     
     @Override
-    public Response<SettingsDTO> findById(UUID settingsId) {
-        SettingsEntity foundSettings = settingsRepository.findById(settingsId).
-                orElseThrow(() -> new ResourceNotFoundException("settings with " + settingsId + " not found"));
+    public Response<SettingsDTO> getResponseFindById(UUID settingsId) {
+        SettingsEntity foundSettings = fetchSettingByID(settingsId);
         return buildSuccessResponseToGet(convertToDTO(foundSettings));
     }
     
+    private SettingsEntity fetchSettingByID(UUID settingsId) {
+        return settingsRepository.findById(settingsId)
+                .orElseThrow(() -> exceptionFactory.notFoundException("Settings", settingsId.toString()));
+    }
+    
     @Override
-    public SettingsEntity updateSettings(SettingsEntity settings, UUID settingsId) {
-        SettingsEntity settingsDB = settingsRepository.findById(settingsId)
-                .orElseThrow(() -> new ResourceNotFoundException("Settings with ID " + settingsId + " not found"));
+    public Response<SettingsDTO> getResponseUpdate(SettingsEntity settings, UUID settingsId) {
+        SettingsEntity settingsDB = fetchSettingByID(settingsId);
+        
+        updateSettingsFields(settingsDB, settings);
+        
+        return buildSuccessResponseToGet(convertToDTO(settingsDB));
+    }
+    
+    private void updateSettingsFields(SettingsEntity settingsDB, SettingsEntity settings) {
         // settings will always have valid and intentional values after the validation layer
         settingsDB.setName(settings.getName());
         settingsDB.setNormalHours(settings.getNormalHours());
         settingsDB.setNightCoefficient(settings.getNightCoefficient());
         settingsDB.setWeekendCoefficient(settings.getWeekendCoefficient());
-        
-        return settingsDB;
     }
     
     @Override
-    public void deleteSettingsById(UUID settingsId) {
+    public void getResponseDeleteById(UUID settingsId) {
         settingsRepository.deleteById(settingsId);
     }
     

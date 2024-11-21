@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExceptionFactory {
     
-    public ResourceNotFoundException createNotFoundException(String entityName, String identifier) {
+    public ResourceNotFoundException notFoundException(String entityName, String identifier) {
         String message = String.format("%s with %s not found", entityName, identifier);
         return new ResourceNotFoundException(message);
     }

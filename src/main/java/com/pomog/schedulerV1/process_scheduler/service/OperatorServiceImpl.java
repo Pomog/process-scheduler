@@ -7,7 +7,6 @@ import com.pomog.schedulerV1.process_scheduler.entity.SettingsEntity;
 import com.pomog.schedulerV1.process_scheduler.exception.ExceptionFactory;
 import com.pomog.schedulerV1.process_scheduler.repository.OperatorRepository;
 import com.pomog.schedulerV1.process_scheduler.repository.SettingsRepository;
-import com.pomog.schedulerV1.process_scheduler.repository.SkillRepository;
 import com.pomog.schedulerV1.process_scheduler.response.Response;
 import com.pomog.schedulerV1.process_scheduler.response.ResponseFactory;
 import org.springframework.context.MessageSource;
@@ -60,7 +59,7 @@ public class OperatorServiceImpl extends BaseService<OperatorEntity, OperatorDTO
     
     protected OperatorEntity fetchOperatorEntityByName(String name) {
         return operatorRepository.findOperatorEntityByNameIgnoreCase(name)
-                .orElseThrow(() -> exceptionFactory.createNotFoundException("Operator", "name: " + name));
+                .orElseThrow(() -> exceptionFactory.notFoundException("Operator", "name: " + name));
     }
     
     @Override
@@ -77,7 +76,7 @@ public class OperatorServiceImpl extends BaseService<OperatorEntity, OperatorDTO
     @Transactional
     public Response<OperatorDTO> getResponseUpdateOperator(UUID id, OperatorEntity operatorEntity) {
         OperatorEntity existingOperator = operatorRepository.findById(id)
-                .orElseThrow(() -> exceptionFactory.createNotFoundException("Operator", "ID: " + id.toString()));
+                .orElseThrow(() -> exceptionFactory.notFoundException("Operator", "ID: " + id.toString()));
         
         updateOperatorFields(existingOperator, operatorEntity);
         
