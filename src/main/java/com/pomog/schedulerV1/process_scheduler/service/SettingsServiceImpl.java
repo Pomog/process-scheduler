@@ -16,31 +16,35 @@ import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @Service
-public class SettingsServiceImpl extends BaseService<SettingsDTO> implements SettingsService {
+public class SettingsServiceImpl extends BaseService<SettingsEntity, SettingsDTO> implements SettingsService {
     
     private final SettingsRepository settingsRepository;
+    private final SettingsDTOFactory dtoFactory;
     
-    //        TODO implement universal DTO factory
-    private final SettingsDTOFactory settingsDTOFactory;
-    
-    public SettingsServiceImpl(SettingsRepository settingsRepository, ResponseFactory responseFactory, MessageSource messageSource, SettingsDTOFactory settingsDTOFactory) {
-        super(responseFactory, messageSource);
+    public SettingsServiceImpl(
+            SettingsRepository settingsRepository,
+            ResponseFactory responseFactory,
+            MessageSource messageSource,
+            SettingsDTOFactory dtoFactory) {
+        super(responseFactory, messageSource, dtoFactory);
         this.settingsRepository = settingsRepository;
-        this.settingsDTOFactory = settingsDTOFactory;
+        this.dtoFactory = dtoFactory;
+        //        TODO implement universal DTO factory
+        
     }
     
     @Override
     public Response<SettingsDTO> saveSettings(SettingsEntity settings) {
-        SettingsDTO savedSettingsDTO= settingsDTOFactory.createFromEntity(settingsRepository.save(settings));
+        SettingsDTO savedSettingsDTO = dtoFactory.createFromEntity(settingsRepository.save(settings));
         return buildSuccessResponseToSave(savedSettingsDTO);
     }
     
     @Override
     public Response<List<SettingsDTO>> fetchSettingsList() {
         List<SettingsDTO> foundData = StreamSupport.stream(settingsRepository.findAll().spliterator(), false)
-                .map(SettingsDTO::new)
+                .map(this::convertToDTO)
                 .toList();
-
+        
         return createResponseForList(foundData);
     }
     
@@ -48,36 +52,25 @@ public class SettingsServiceImpl extends BaseService<SettingsDTO> implements Set
     public Response<SettingsDTO> findById(UUID settingsId) {
         SettingsEntity foundSettings = settingsRepository.findById(settingsId).
                 orElseThrow(() -> new ResourceNotFoundException("settings with " + settingsId + " not found"));
-        return buildSuccessResponseToGet(new SettingsDTO(foundSettings));
+        return buildSuccessResponseToGet(convertToDTO(foundSettings));
     }
     
     @Override
     public SettingsEntity updateSettings(SettingsEntity settings, UUID settingsId) {
         SettingsEntity settingsDB = settingsRepository.findById(settingsId)
                 .orElseThrow(() -> new ResourceNotFoundException("Settings with ID " + settingsId + " not found"));
-//        TODO need to check is it worth to use IF
-        if (!"".equalsIgnoreCase(settings.getName())) {
-            settingsDB.setName(settings.getName());
-        }
+        // settings will always have valid and intentional values after the validation layer
+        settingsDB.setName(settings.getName());
+        settingsDB.setNormalHours(settings.getNormalHours());
+        settingsDB.setNightCoefficient(settings.getNightCoefficient());
+        settingsDB.setWeekendCoefficient(settings.getWeekendCoefficient());
         
-        if (0.0 != settings.getNormalHours()) {
-            settingsDB.setNormalHours(settings.getNormalHours());
-        }
-        
-        if (0.0 != settings.getNightCoefficient()) {
-            settingsDB.setNightCoefficient(settings.getNightCoefficient());
-        }
-        
-        if (0.0 != settings.getWeekendCoefficient()) {
-            settingsDB.setWeekendCoefficient(settings.getWeekendCoefficient());
-        }
-        
-        return settingsRepository.save(settingsDB);
+        return settingsDB;
     }
     
     @Override
     public void deleteSettingsById(UUID settingsId) {
         settingsRepository.deleteById(settingsId);
     }
-
+    
 }

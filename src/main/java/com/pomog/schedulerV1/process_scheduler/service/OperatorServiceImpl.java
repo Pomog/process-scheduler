@@ -19,29 +19,32 @@ import java.util.Locale;
 import java.util.UUID;
 
 @Service
-public class OperatorServiceImpl extends BaseService<OperatorDTO> implements OperatorService {
+public class OperatorServiceImpl extends BaseService<OperatorEntity, OperatorDTO> implements OperatorService {
     private final OperatorRepository operatorRepository;
     private final SettingsRepository settingsRepository;
-    private final SkillRepository skillRepository;
     private final ExceptionFactory exceptionFactory;
-    private final OperatorDTOFactory operatorDTOFactory;
     private final ResponseFactory responseFactory;
     private final MessageSource messageSource;
     
-    public OperatorServiceImpl(OperatorRepository operatorRepository, SettingsRepository settingsRepository, SkillRepository skillRepository, ExceptionFactory exceptionFactory, OperatorDTOFactory operatorDTOFactory, ResponseFactory responseFactory, MessageSource messageSource) {
-        super(responseFactory, messageSource);
+    public OperatorServiceImpl(
+            OperatorRepository operatorRepository,
+            SettingsRepository settingsRepository,
+            ExceptionFactory exceptionFactory,
+            OperatorDTOFactory operatorDTOFactory,
+            ResponseFactory responseFactory,
+            MessageSource messageSource
+    ) {
+        super(responseFactory, messageSource, operatorDTOFactory);
         this.operatorRepository = operatorRepository;
         this.settingsRepository = settingsRepository;
-        this.skillRepository = skillRepository;
         this.exceptionFactory = exceptionFactory;
-        this.operatorDTOFactory = operatorDTOFactory;
         this.responseFactory = responseFactory;
         this.messageSource = messageSource;
     }
     
     @Override
     public Response<OperatorDTO> getResponseSaveOperator(OperatorEntity operatorEntity) {
-        OperatorDTO operatorDTO = operatorDTOFactory.createFromEntity(saveOperator(operatorEntity));
+        OperatorDTO operatorDTO = this.convertToDTO(saveOperator(operatorEntity));
         return buildSuccessResponseToSave(operatorDTO);
     }
     
@@ -51,7 +54,7 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     
     @Override
     public Response<OperatorDTO> getResponseFetchOperatorByName(String name) {
-        OperatorDTO operatorDTO = operatorDTOFactory.createFromEntity(fetchOperatorEntityByName(name));
+        OperatorDTO operatorDTO = this.convertToDTO(fetchOperatorEntityByName(name));
         return buildSuccessResponseToGet(operatorDTO);
     }
     
@@ -99,7 +102,7 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     @Override
     public Response<List<OperatorDTO>> getResponseForAllOperators() {
         return createResponseForList(operatorRepository.findAll().stream()
-                .map(operatorDTOFactory::createFromEntity)
+                .map(this::convertToDTO)
                 .toList());
     }
     
@@ -118,13 +121,13 @@ public class OperatorServiceImpl extends BaseService<OperatorDTO> implements Ope
     @Override
     public Response<List<OperatorDTO>> findOperatorEntitiesBySkillEntities_ProcessName(String processName) {
         return createResponseForList(operatorRepository.findOperatorEntitiesBySkillEntities_ProcessName(processName).stream()
-                .map(operatorDTOFactory::createFromEntity)
+                .map(this::convertToDTO)
                 .toList());
     }
     
     protected List<OperatorDTO> getOperatorDTOsByShiftPreference(boolean prefersShift, ShiftType shiftType) {
         return fetchOperatorEntitiesByShiftPreference(prefersShift, shiftType).stream()
-                .map(operatorDTOFactory::createFromEntity)
+                .map(this::convertToDTO)
                 .toList();
     }
     

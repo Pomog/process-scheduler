@@ -1,6 +1,7 @@
 package com.pomog.schedulerV1.process_scheduler.service;
 
 import com.pomog.schedulerV1.process_scheduler.dto.SkillDTO;
+import com.pomog.schedulerV1.process_scheduler.dto.SkillDTOFactory;
 import com.pomog.schedulerV1.process_scheduler.entity.SkillEntity;
 import com.pomog.schedulerV1.process_scheduler.repository.SkillRepository;
 import com.pomog.schedulerV1.process_scheduler.response.Response;
@@ -11,11 +12,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class SkillServiceImpl extends BaseService<SkillDTO> implements SkillsService{
+public class SkillServiceImpl extends BaseService<SkillEntity, SkillDTO> implements SkillsService{
     private final SkillRepository skillRepository;
     
-    public SkillServiceImpl(SkillRepository skillRepository, ResponseFactory responseFactory, MessageSource messageSource) {
-        super(responseFactory, messageSource);
+    public SkillServiceImpl(
+            SkillRepository skillRepository,
+            ResponseFactory responseFactory,
+            MessageSource messageSource,
+            SkillDTOFactory dtoFactory
+    ) {
+        super(responseFactory, messageSource, dtoFactory);
         this.skillRepository = skillRepository;
     }
     
@@ -32,7 +38,7 @@ public class SkillServiceImpl extends BaseService<SkillDTO> implements SkillsSer
     @Override
     public Response<List<SkillDTO>> findAllByOperatorEntities_Name(String operatorName) {
         List<SkillDTO> skillDTOS = skillRepository.findAllByOperatorEntities_Name(operatorName).stream()
-                        .map(SkillDTO::new)
+                        .map(this::convertToDTO)
                         .toList();
         return createResponseForList(skillDTOS);
     }
