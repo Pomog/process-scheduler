@@ -81,4 +81,10 @@ public class OperatorController {
         return operatorService.getResponseUpdateOperator(id, operatorEntity);
     }
     
+    @GetMapping("/skilled/process-name/{process-name}")
+    public Response<List<OperatorDTO>> getOperatorsSkilledForProcess (@PathVariable("process-name") String processName) {
+        return operatorService.findOperatorEntitiesBySkillEntities_ProcessName(processName);
+    }
+    
+    
 }
