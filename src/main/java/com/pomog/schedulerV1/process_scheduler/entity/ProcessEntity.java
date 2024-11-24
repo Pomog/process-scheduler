@@ -29,4 +29,12 @@ public class ProcessEntity {
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER)
     private List<StepEntity> stepEntities;
+    
+    public boolean addStep (StepEntity stepEntity){
+       return stepEntities.add(stepEntity);
+    }
+    
+    public boolean deleteStep (StepEntity stepEntity){
+        return stepEntities.remove(stepEntity);
+    }
 }
