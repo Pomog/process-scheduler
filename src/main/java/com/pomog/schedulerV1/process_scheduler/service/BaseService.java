@@ -37,6 +37,10 @@ public abstract class BaseService<E, D> {
         return responseFactory.buildSuccessResponse(getSuccessMessage("save.empty"), data);
     }
     
+    protected Response<Void> buildSuccessResponseToDelete () {
+        return responseFactory.createDeleteSingleResponse(getSuccessMessage("delete.success"));
+    }
+    
     protected String getSuccessMessage(String key) {
         return messageSource.getMessage(key, null, Locale.getDefault());
     }
@@ -46,5 +50,9 @@ public abstract class BaseService<E, D> {
             throw new IllegalArgumentException("Entity cannot be null.");
         }
         return dtoFactory.createFromEntity(entity);
+    }
+    
+    protected List<D> convertEntitiesToDTOs(List<E> entities) {
+        return entities.stream().map(this::convertToDTO).toList();
     }
 }

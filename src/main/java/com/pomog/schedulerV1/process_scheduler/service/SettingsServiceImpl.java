@@ -5,7 +5,6 @@ import com.pomog.schedulerV1.process_scheduler.dto.SettingsDTO;
 import com.pomog.schedulerV1.process_scheduler.dto.SettingsDTOFactory;
 import com.pomog.schedulerV1.process_scheduler.entity.SettingsEntity;
 import com.pomog.schedulerV1.process_scheduler.exception.ExceptionFactory;
-import com.pomog.schedulerV1.process_scheduler.exception.ResourceNotFoundException;
 import com.pomog.schedulerV1.process_scheduler.repository.SettingsRepository;
 import com.pomog.schedulerV1.process_scheduler.response.Response;
 import com.pomog.schedulerV1.process_scheduler.response.ResponseFactory;
@@ -21,28 +20,30 @@ public class SettingsServiceImpl extends BaseService<SettingsEntity, SettingsDTO
     private final SettingsRepository settingsRepository;
     private final SettingsDTOFactory dtoFactory;
     private final ExceptionFactory exceptionFactory;
+    private final ResponseFactory responseFactory;
     
     public SettingsServiceImpl(
             SettingsRepository settingsRepository,
             ResponseFactory responseFactory,
             MessageSource messageSource,
             SettingsDTOFactory dtoFactory,
-            ExceptionFactory exceptionFactory
-    ) {
+            ExceptionFactory exceptionFactory,
+            ResponseFactory responseFactory1) {
         super(responseFactory, messageSource, dtoFactory);
         this.settingsRepository = settingsRepository;
         this.dtoFactory = dtoFactory;
         this.exceptionFactory = exceptionFactory;
+        this.responseFactory = responseFactory1;
     }
     
     @Override
-    public Response<SettingsDTO> getResponseSave(SettingsEntity settings) {
+    public Response<SettingsDTO> saveResponse(SettingsEntity settings) {
         SettingsDTO savedSettingsDTO = dtoFactory.createFromEntity(settingsRepository.save(settings));
         return buildSuccessResponseToSave(savedSettingsDTO);
     }
     
     @Override
-    public Response<List<SettingsDTO>> getResponseFetchAll() {
+    public Response<List<SettingsDTO>> fetchAllResponse() {
         List<SettingsDTO> foundData = StreamSupport.stream(settingsRepository.findAll().spliterator(), false)
                 .map(this::convertToDTO)
                 .toList();
@@ -51,7 +52,7 @@ public class SettingsServiceImpl extends BaseService<SettingsEntity, SettingsDTO
     }
     
     @Override
-    public Response<SettingsDTO> getResponseFindById(UUID settingsId) {
+    public Response<SettingsDTO> fetchByIdResponse(UUID settingsId) {
         SettingsEntity foundSettings = fetchSettingByID(settingsId);
         return buildSuccessResponseToGet(convertToDTO(foundSettings));
     }
@@ -62,15 +63,15 @@ public class SettingsServiceImpl extends BaseService<SettingsEntity, SettingsDTO
     }
     
     @Override
-    public Response<SettingsDTO> getResponseUpdate(SettingsEntity settings, UUID settingsId) {
+    public Response<SettingsDTO> updateResponse(SettingsEntity settings, UUID settingsId) {
         SettingsEntity settingsDB = fetchSettingByID(settingsId);
         
-        updateSettingsFields(settingsDB, settings);
+        applyUpdatedFields(settingsDB, settings);
         
         return buildSuccessResponseToGet(convertToDTO(settingsDB));
     }
     
-    private void updateSettingsFields(SettingsEntity settingsDB, SettingsEntity settings) {
+    private void applyUpdatedFields(SettingsEntity settingsDB, SettingsEntity settings) {
         // settings will always have valid and intentional values after the validation layer
         settingsDB.setName(settings.getName());
         settingsDB.setNormalHours(settings.getNormalHours());
@@ -79,8 +80,9 @@ public class SettingsServiceImpl extends BaseService<SettingsEntity, SettingsDTO
     }
     
     @Override
-    public void getResponseDeleteById(UUID settingsId) {
+    public Response<Void> deleteByIdResponse(UUID settingsId) {
         settingsRepository.deleteById(settingsId);
+        return responseFactory.createDeleteSingleResponse(getSuccessMessage("delete.success"));
     }
     
 }

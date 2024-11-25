@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,19 +32,11 @@ public class StepEntity {
     private ProcessEntity processEntity;
     
     @ManyToMany(mappedBy = "stepEntities", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<EquipmentEntity> equipmentEntity;
+    private List<EquipmentEntity> equipmentEntities = new ArrayList<>();
     
     @OneToOne
     @JoinColumn(name = "code")
     private RoomEntity roomEntity;
-    
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "step_operator",
-            joinColumns = @JoinColumn(name = "step_id"),
-            inverseJoinColumns = @JoinColumn(name = "operator_id")
-    )
-    private List<OperatorEntity> operatorEntities;
     
     @Column(name = "duration")
     private Duration duration;
@@ -59,4 +52,13 @@ public class StepEntity {
     
     @Column(name = "end-time")
     private LocalDateTime endTime;
+    
+    public boolean addEquipment (EquipmentEntity equipmentEntity){
+        return equipmentEntities.add(equipmentEntity);
+    }
+    
+    public boolean deleteEquipment (EquipmentEntity equipmentEntity){
+        return equipmentEntities.remove(equipmentEntity);
+    }
+    
 }

@@ -2,10 +2,7 @@ package com.pomog.schedulerV1.process_scheduler.dto;
 
 import com.pomog.schedulerV1.process_scheduler.entity.SettingsEntity;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-
 
 @Component
 public class SettingsDTOFactory implements DTOFactory<SettingsEntity, SettingsDTO> {

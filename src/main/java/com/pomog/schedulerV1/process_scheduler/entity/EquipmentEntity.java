@@ -3,6 +3,7 @@ package com.pomog.schedulerV1.process_scheduler.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,5 +31,5 @@ public class EquipmentEntity {
             joinColumns = @JoinColumn(name = "equipment_id"),
             inverseJoinColumns = @JoinColumn(name = "step_id")
     )
-    private List<StepEntity> stepEntities;
+    private List<StepEntity> stepEntities = new ArrayList<>();
 }

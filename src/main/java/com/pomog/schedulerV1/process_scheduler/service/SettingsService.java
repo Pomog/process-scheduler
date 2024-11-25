@@ -9,18 +9,18 @@ import java.util.UUID;
 
 public interface SettingsService {
     // save operation
-    Response<SettingsDTO> getResponseSave(SettingsEntity settings);
+    Response<SettingsDTO> saveResponse(SettingsEntity settings);
     
     // read operation
-    Response<List<SettingsDTO>> getResponseFetchAll();
+    Response<List<SettingsDTO>> fetchAllResponse();
     
     // find
-    Response<SettingsDTO> getResponseFindById(UUID settingsId);
+    Response<SettingsDTO> fetchByIdResponse(UUID settingsId);
     
     // update operation
-    Response<SettingsDTO> getResponseUpdate(SettingsEntity settings, UUID settingsId);
+    Response<SettingsDTO> updateResponse(SettingsEntity settings, UUID settingsId);
     
     // delete operation
-    void getResponseDeleteById(UUID settingsId);
+    Response<Void> deleteByIdResponse(UUID settingsId);
 
 }

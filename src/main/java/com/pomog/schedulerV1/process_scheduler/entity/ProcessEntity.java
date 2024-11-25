@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ public class ProcessEntity {
             mappedBy = "processEntity",
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER)
-    private List<StepEntity> stepEntities;
+    private List<StepEntity> stepEntities = new ArrayList<>();
     
     public boolean addStep (StepEntity stepEntity){
        return stepEntities.add(stepEntity);

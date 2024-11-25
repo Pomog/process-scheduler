@@ -22,27 +22,27 @@ public class SettingsController {
     
     @PostMapping
     public Response<SettingsDTO> saveSettings(@Valid @RequestBody SettingsEntity settingsEntity) {
-        return settingsService.getResponseSave(settingsEntity);
+        return settingsService.saveResponse(settingsEntity);
     }
     
     @GetMapping
     public Response<List<SettingsDTO>> getAllSettings() {
-        return settingsService.getResponseFetchAll();
+        return settingsService.fetchAllResponse();
     }
     
     @GetMapping("/{id}")
     public Response<SettingsDTO> getSettingsById(@Valid @PathVariable UUID id) {
-        return settingsService.getResponseFindById(id);
+        return settingsService.fetchByIdResponse(id);
     }
     
     @PutMapping("/{id}")
     public Response<SettingsDTO> updateSettings(@Valid @PathVariable UUID id, @Valid @RequestBody SettingsEntity settingsEntity) {
-        return settingsService.getResponseUpdate(settingsEntity, id);
+        return settingsService.updateResponse(settingsEntity, id);
     }
     
     @DeleteMapping("/{id}")
     public Response<Void> deleteSettingsById(@Valid @PathVariable UUID id) {
-        settingsService.getResponseDeleteById(id);
+        settingsService.deleteByIdResponse(id);
         return new Response<>(200, "Deleted successfully", null);
     }
 }

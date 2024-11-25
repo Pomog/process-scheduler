@@ -2,7 +2,6 @@ package com.pomog.schedulerV1.process_scheduler.dto;
 
 import com.pomog.schedulerV1.process_scheduler.annotation.NotNegativeDuration;
 import com.pomog.schedulerV1.process_scheduler.annotation.ValidUUID;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -50,7 +49,7 @@ public class StepDTO {
         this.startTime = stepEntity.getStartTime();
         this.endTime = stepEntity.getEndTime();
         
-        this.equipment = stepEntity.getEquipmentEntity().stream()
+        this.equipment = stepEntity.getEquipmentEntities().stream()
                 .map(EquipmentDTO::new).collect(Collectors.toList());
         this.operators = stepEntity.getOperatorEntities().stream()
                 .map(OperatorDTO::new)

@@ -22,8 +22,6 @@ public class OperatorServiceImpl extends BaseService<OperatorEntity, OperatorDTO
     private final OperatorRepository operatorRepository;
     private final SettingsRepository settingsRepository;
     private final ExceptionFactory exceptionFactory;
-    private final ResponseFactory responseFactory;
-    private final MessageSource messageSource;
     
     public OperatorServiceImpl(
             OperatorRepository operatorRepository,
@@ -37,8 +35,6 @@ public class OperatorServiceImpl extends BaseService<OperatorEntity, OperatorDTO
         this.operatorRepository = operatorRepository;
         this.settingsRepository = settingsRepository;
         this.exceptionFactory = exceptionFactory;
-        this.responseFactory = responseFactory;
-        this.messageSource = messageSource;
     }
     
     @Override
@@ -100,34 +96,30 @@ public class OperatorServiceImpl extends BaseService<OperatorEntity, OperatorDTO
     
     @Override
     public Response<List<OperatorDTO>> getResponseForAllOperators() {
-        return createResponseForList(operatorRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .toList());
+        return createResponseForList(convertEntitiesToDTOs(operatorRepository.findAll()));
     }
     
     @Override
     public Response<Void> getResponseForDeleteOperatorByID(UUID id) {
         operatorRepository.deleteById(id);
-        return responseFactory.createDeleteSingleResponse(getSuccessMessage("operators.delete.success"));
+        return buildSuccessResponseToDelete();
     }
     
     @Override
     public Response<Void> getResponseForDeleteOperatorByName(String name) {
         operatorRepository.deleteOperatorEntityByName(name);
-        return responseFactory.createDeleteSingleResponse(getSuccessMessage("operators.delete.success"));
+        return buildSuccessResponseToDelete();
     }
     
     @Override
     public Response<List<OperatorDTO>> findOperatorEntitiesBySkillEntities_ProcessName(String processName) {
-        return createResponseForList(operatorRepository.findOperatorEntitiesBySkillEntities_ProcessName(processName).stream()
-                .map(this::convertToDTO)
-                .toList());
+        return createResponseForList(convertEntitiesToDTOs(
+                operatorRepository.findOperatorEntitiesBySkillEntities_ProcessName(processName))
+        );
     }
     
     protected List<OperatorDTO> getOperatorDTOsByShiftPreference(boolean prefersShift, ShiftType shiftType) {
-        return fetchOperatorEntitiesByShiftPreference(prefersShift, shiftType).stream()
-                .map(this::convertToDTO)
-                .toList();
+        return convertEntitiesToDTOs(fetchOperatorEntitiesByShiftPreference(prefersShift, shiftType));
     }
     
     protected List<OperatorEntity> fetchOperatorEntitiesByShiftPreference(boolean prefersShift, ShiftType shiftType) {
@@ -137,8 +129,5 @@ public class OperatorServiceImpl extends BaseService<OperatorEntity, OperatorDTO
             default -> throw exceptionFactory.createUnsupportedShiftTypeException(shiftType.toString());
         };
     }
-    
-    protected String getSuccessMessage(String key) {
-        return messageSource.getMessage(key, null, Locale.getDefault());
-    }
+
 }

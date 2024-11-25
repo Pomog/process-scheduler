@@ -2,6 +2,7 @@ package com.pomog.schedulerV1.process_scheduler.dto;
 
 
 import com.pomog.schedulerV1.process_scheduler.annotation.ValidUUID;
+import com.pomog.schedulerV1.process_scheduler.entity.StepEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -33,5 +34,13 @@ public class ProcessDTO {
         this.steps = processEntity.getStepEntities().stream()
                 .map(StepDTO::new)
                 .collect(Collectors.toList());
+    }
+    
+    public boolean addStep (StepDTO stepDTO){
+        return stepEntities.add(stepDTO);
+    }
+    
+    public boolean deleteStep (StepDTO stepDTO){
+        return steps.remove(stepDTO);
     }
 }
