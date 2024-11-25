@@ -29,7 +29,7 @@ public class SettingsServiceImpl extends BaseService<SettingsEntity, SettingsDTO
             SettingsDTOFactory dtoFactory,
             ExceptionFactory exceptionFactory,
             ResponseFactory responseFactory1) {
-        super(responseFactory, messageSource, dtoFactory);
+        super(responseFactory, messageSource, dtoFactory, exceptionFactory);
         this.settingsRepository = settingsRepository;
         this.dtoFactory = dtoFactory;
         this.exceptionFactory = exceptionFactory;
@@ -82,7 +82,7 @@ public class SettingsServiceImpl extends BaseService<SettingsEntity, SettingsDTO
     @Override
     public Response<Void> deleteByIdResponse(UUID settingsId) {
         settingsRepository.deleteById(settingsId);
-        return responseFactory.createDeleteSingleResponse(getSuccessMessage("delete.success"));
+        return buildSuccessResponseToDelete();
     }
     
 }

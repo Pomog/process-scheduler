@@ -3,6 +3,7 @@ package com.pomog.schedulerV1.process_scheduler.service;
 import com.pomog.schedulerV1.process_scheduler.dto.SkillDTO;
 import com.pomog.schedulerV1.process_scheduler.dto.SkillDTOFactory;
 import com.pomog.schedulerV1.process_scheduler.entity.SkillEntity;
+import com.pomog.schedulerV1.process_scheduler.exception.ExceptionFactory;
 import com.pomog.schedulerV1.process_scheduler.repository.SkillRepository;
 import com.pomog.schedulerV1.process_scheduler.response.Response;
 import com.pomog.schedulerV1.process_scheduler.response.ResponseFactory;
@@ -19,9 +20,9 @@ public class SkillServiceImpl extends BaseService<SkillEntity, SkillDTO> impleme
             SkillRepository skillRepository,
             ResponseFactory responseFactory,
             MessageSource messageSource,
-            SkillDTOFactory dtoFactory
-    ) {
-        super(responseFactory, messageSource, dtoFactory);
+            SkillDTOFactory dtoFactory,
+            ExceptionFactory exceptionFactory) {
+        super(responseFactory, messageSource, dtoFactory, exceptionFactory);
         this.skillRepository = skillRepository;
     }
     
@@ -37,9 +38,6 @@ public class SkillServiceImpl extends BaseService<SkillEntity, SkillDTO> impleme
     
     @Override
     public Response<List<SkillDTO>> findAllByOperatorEntities_Name(String operatorName) {
-        List<SkillDTO> skillDTOS = skillRepository.findAllByOperatorEntities_Name(operatorName).stream()
-                        .map(this::convertToDTO)
-                        .toList();
-        return createResponseForList(skillDTOS);
+        return createResponseForList(convertEntitiesToDTOs(skillRepository.findAllByOperatorEntities_Name(operatorName)));
     }
 }

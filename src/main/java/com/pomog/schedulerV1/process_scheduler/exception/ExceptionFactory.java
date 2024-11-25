@@ -10,6 +10,11 @@ public class ExceptionFactory {
         return new ResourceNotFoundException(message);
     }
     
+    public ResourceNotFoundException notFoundException(String entityName) {
+        String message = String.format("%s not found", entityName);
+        return new ResourceNotFoundException(message);
+    }
+    
     public IllegalArgumentException createUnsupportedShiftTypeException(String shiftType) {
         String message = String.format("Unsupported shift type: %s", shiftType);
         return new IllegalArgumentException(message);

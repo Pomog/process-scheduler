@@ -37,7 +37,7 @@ public class ProcessDTO {
     }
     
     public boolean addStep (StepDTO stepDTO){
-        return stepEntities.add(stepDTO);
+        return steps.add(stepDTO);
     }
     
     public boolean deleteStep (StepDTO stepDTO){

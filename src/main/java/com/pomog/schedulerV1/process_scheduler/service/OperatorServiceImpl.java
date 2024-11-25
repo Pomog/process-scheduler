@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -31,7 +30,7 @@ public class OperatorServiceImpl extends BaseService<OperatorEntity, OperatorDTO
             ResponseFactory responseFactory,
             MessageSource messageSource
     ) {
-        super(responseFactory, messageSource, operatorDTOFactory);
+        super(responseFactory, messageSource, operatorDTOFactory, exceptionFactory);
         this.operatorRepository = operatorRepository;
         this.settingsRepository = settingsRepository;
         this.exceptionFactory = exceptionFactory;

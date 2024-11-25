@@ -37,7 +37,6 @@ public class StepDTO {
     private LocalDateTime endTime;
     
     private List<EquipmentDTO> equipment;
-    private List<OperatorDTO> operators; // Operators certified for this stage
     
     public StepDTO(StepEntity stepEntity){
         this.ID = stepEntity.getID();
@@ -51,8 +50,5 @@ public class StepDTO {
         
         this.equipment = stepEntity.getEquipmentEntities().stream()
                 .map(EquipmentDTO::new).collect(Collectors.toList());
-        this.operators = stepEntity.getOperatorEntities().stream()
-                .map(OperatorDTO::new)
-                .collect(Collectors.toList());
     }
 }

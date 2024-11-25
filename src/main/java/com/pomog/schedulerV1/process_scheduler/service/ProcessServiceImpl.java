@@ -23,7 +23,7 @@ public class ProcessServiceImpl extends BaseService<ProcessEntity, ProcessDTO> i
             DTOFactory<ProcessEntity,
             ProcessDTO> dtoFactory,
             ExceptionFactory exceptionFactory) {
-        super(responseFactory, messageSource, dtoFactory);
+        super(responseFactory, messageSource, dtoFactory, exceptionFactory);
         this.exceptionFactory = exceptionFactory;
     }
     
