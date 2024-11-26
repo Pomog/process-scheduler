@@ -54,9 +54,9 @@ public class OperatorServiceImpl extends BaseService<OperatorEntity, OperatorDTO
     
     protected OperatorEntity fetchOperatorEntityByName(String name) {
         return operatorRepository.findOperatorEntityByNameIgnoreCase(name)
-                .orElseThrow(() -> exceptionFactory.notFoundException("Operator", "name: " + name));
+                .orElseThrow(() -> buildNotFoundException("Operator"));
     }
-    
+
     @Override
     public Response<List<OperatorDTO>> getResponseForOperatorsPreferringNightShift(boolean prefersNightShift) {
         return createResponseForList(getOperatorDTOsByShiftPreference(prefersNightShift, ShiftType.NIGHT));

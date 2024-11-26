@@ -2,6 +2,7 @@ package com.pomog.schedulerV1.process_scheduler.service;
 
 import com.pomog.schedulerV1.process_scheduler.dto.DTOFactory;
 import com.pomog.schedulerV1.process_scheduler.exception.ExceptionFactory;
+import com.pomog.schedulerV1.process_scheduler.exception.ResourceNotFoundException;
 import com.pomog.schedulerV1.process_scheduler.response.Response;
 import com.pomog.schedulerV1.process_scheduler.response.ResponseFactory;
 import org.springframework.context.MessageSource;
@@ -37,11 +38,15 @@ public abstract class BaseService<E, D> {
     }
     
     protected Response<D> buildSuccessResponseToSave (D data) {
-        return responseFactory.buildSuccessResponse(getSuccessMessage("save.empty"), data);
+        return responseFactory.buildSuccessResponse(getSuccessMessage("save.success"), data);
     }
     
     protected Response<Void> buildSuccessResponseToDelete () {
         return responseFactory.createDeleteSingleResponse(getSuccessMessage("delete.success"));
+    }
+    
+    protected ResourceNotFoundException buildNotFoundException(String entityName) {
+        return exceptionFactory.notFoundException(entityName);
     }
     
     protected String getSuccessMessage(String key) {

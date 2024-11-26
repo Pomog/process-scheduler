@@ -1,6 +1,7 @@
 package com.pomog.schedulerV1.process_scheduler.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -23,6 +24,7 @@ public class ProcessEntity {
     
     @Column(name = "process-name")
     @NonNull
+    @Size(min = 2, max = 30)
     private String processName;
     
     @OneToMany(
