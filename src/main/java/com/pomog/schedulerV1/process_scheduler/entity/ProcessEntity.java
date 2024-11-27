@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "process")
+@Table(name = "process", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"process-name"})
+})
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor

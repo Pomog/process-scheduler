@@ -1,6 +1,7 @@
 package com.pomog.schedulerV1.process_scheduler.service;
 
 import com.pomog.schedulerV1.process_scheduler.dto.ProcessDTO;
+import com.pomog.schedulerV1.process_scheduler.dto.StepDTO;
 import com.pomog.schedulerV1.process_scheduler.entity.ProcessEntity;
 import com.pomog.schedulerV1.process_scheduler.entity.StepEntity;
 import com.pomog.schedulerV1.process_scheduler.response.Response;
@@ -13,15 +14,11 @@ public interface ProcessService {
     
     Response<ProcessDTO> getProcessByIdResponse(UUID processId);
     
-    Response<List<ProcessEntity>> getAllProcesses();
+    Response<List<ProcessDTO>> getAllProcesses();
     
     Response<ProcessEntity> updateProcessResponse(UUID processId, ProcessEntity updatedProcess);
     
     Response<Void> deleteProcessById(UUID processId);
     
-    Response<ProcessEntity> addStepToProcessResponse(UUID processId, StepEntity stepEntity);
-    
-    Response<ProcessEntity> removeStepFromProcessResponse(UUID processId, UUID stepId);
-    
-    Response<List<StepEntity>> getStepsForProcessResponse(UUID processId);
+    Response<List<StepDTO>> getStepsForProcessResponse(UUID processId);
 }

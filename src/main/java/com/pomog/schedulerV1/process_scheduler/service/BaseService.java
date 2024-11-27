@@ -27,35 +27,35 @@ public abstract class BaseService<E, D> {
         return new Response<D> (status, message, data);
     }
     
-    protected Response<List<D>> createResponseForList(List<D> dtoList) {
+    protected Response<List<D>> buildResponseForList(List<D> dtoList) {
         return dtoList.isEmpty()
-                ? responseFactory.buildSuccessResponse(getSuccessMessage("fetch.empty"), dtoList)
-                : responseFactory.buildSuccessResponse(getSuccessMessage("fetch.success"), dtoList);
+                ? responseFactory.buildSuccessResponse(getMessage("fetch.empty"), dtoList)
+                : responseFactory.buildSuccessResponse(getMessage("fetch.success"), dtoList);
     }
     
     protected Response<D> buildSuccessResponseToGet (D data) {
-        return responseFactory.buildSuccessResponse(getSuccessMessage("fetch.success"), data);
+        return responseFactory.buildSuccessResponse(getMessage("fetch.success"), data);
     }
     
     protected Response<D> buildSuccessResponseToSave (D data) {
-        return responseFactory.buildSuccessResponse(getSuccessMessage("save.success"), data);
+        return responseFactory.buildSuccessResponse(getMessage("save.success"), data);
     }
     
     protected Response<Void> buildSuccessResponseToDelete () {
-        return responseFactory.createDeleteSingleResponse(getSuccessMessage("delete.success"));
+        return responseFactory.createDeleteSingleResponse(getMessage("delete.success"));
     }
     
     protected ResourceNotFoundException buildNotFoundException(String entityName) {
         return exceptionFactory.notFoundException(entityName);
     }
     
-    protected String getSuccessMessage(String key) {
+    protected String getMessage(String key) {
         return messageSource.getMessage(key, null, Locale.getDefault());
     }
     
     protected D convertToDTO(E entity) {
         if (entity == null) {
-            throw exceptionFactory.notFoundException(getSuccessMessage("fetch.empty"));
+            throw exceptionFactory.notFoundException(getMessage("fetch.empty"));
         }
         return dtoFactory.createFromEntity(entity);
     }

@@ -48,7 +48,7 @@ public class SettingsServiceImpl extends BaseService<SettingsEntity, SettingsDTO
                 .map(this::convertToDTO)
                 .toList();
         
-        return createResponseForList(foundData);
+        return buildResponseForList(foundData);
     }
     
     @Override

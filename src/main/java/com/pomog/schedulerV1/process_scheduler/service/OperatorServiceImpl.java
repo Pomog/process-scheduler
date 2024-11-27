@@ -59,12 +59,12 @@ public class OperatorServiceImpl extends BaseService<OperatorEntity, OperatorDTO
 
     @Override
     public Response<List<OperatorDTO>> getResponseForOperatorsPreferringNightShift(boolean prefersNightShift) {
-        return createResponseForList(getOperatorDTOsByShiftPreference(prefersNightShift, ShiftType.NIGHT));
+        return buildResponseForList(getOperatorDTOsByShiftPreference(prefersNightShift, ShiftType.NIGHT));
     }
     
     @Override
     public Response<List<OperatorDTO>> getResponseForOperatorsPreferringWeekendShift(boolean prefersWeekendShift) {
-        return createResponseForList(getOperatorDTOsByShiftPreference(prefersWeekendShift, ShiftType.WEEKEND));
+        return buildResponseForList(getOperatorDTOsByShiftPreference(prefersWeekendShift, ShiftType.WEEKEND));
     }
     
     @Override
@@ -95,7 +95,7 @@ public class OperatorServiceImpl extends BaseService<OperatorEntity, OperatorDTO
     
     @Override
     public Response<List<OperatorDTO>> getResponseForAllOperators() {
-        return createResponseForList(convertEntitiesToDTOs(operatorRepository.findAll()));
+        return buildResponseForList(convertEntitiesToDTOs(operatorRepository.findAll()));
     }
     
     @Override
@@ -112,7 +112,7 @@ public class OperatorServiceImpl extends BaseService<OperatorEntity, OperatorDTO
     
     @Override
     public Response<List<OperatorDTO>> findOperatorEntitiesBySkillEntities_ProcessName(String processName) {
-        return createResponseForList(convertEntitiesToDTOs(
+        return buildResponseForList(convertEntitiesToDTOs(
                 operatorRepository.findOperatorEntitiesBySkillEntities_ProcessName(processName))
         );
     }

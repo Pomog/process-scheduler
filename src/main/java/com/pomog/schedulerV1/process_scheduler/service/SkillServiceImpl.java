@@ -38,6 +38,6 @@ public class SkillServiceImpl extends BaseService<SkillEntity, SkillDTO> impleme
     
     @Override
     public Response<List<SkillDTO>> findAllByOperatorEntities_Name(String operatorName) {
-        return createResponseForList(convertEntitiesToDTOs(skillRepository.findAllByOperatorEntities_Name(operatorName)));
+        return buildResponseForList(convertEntitiesToDTOs(skillRepository.findAllByOperatorEntities_Name(operatorName)));
     }
 }
