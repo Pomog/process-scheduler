@@ -61,4 +61,38 @@ public class StepEntity {
         return equipmentEntities.remove(equipmentEntity);
     }
     
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof StepEntity that)) return false;
+        
+        if (isNightShift() != that.isNightShift()) return false;
+        if (isWeekend() != that.isWeekend()) return false;
+        if (!getStepName().equals(that.getStepName())) return false;
+        if (getProcessEntity() != null ? !getProcessEntity().equals(that.getProcessEntity()) : that.getProcessEntity() != null)
+            return false;
+        if (getEquipmentEntities() != null ? !getEquipmentEntities().equals(that.getEquipmentEntities()) : that.getEquipmentEntities() != null)
+            return false;
+        if (getRoomEntity() != null ? !getRoomEntity().equals(that.getRoomEntity()) : that.getRoomEntity() != null)
+            return false;
+        if (getDuration() != null ? !getDuration().equals(that.getDuration()) : that.getDuration() != null)
+            return false;
+        if (getStartTime() != null ? !getStartTime().equals(that.getStartTime()) : that.getStartTime() != null)
+            return false;
+        return getEndTime() != null ? getEndTime().equals(that.getEndTime()) : that.getEndTime() == null;
+    }
+    
+    @Override
+    public int hashCode() {
+        int result = getStepName().hashCode();
+        result = 31 * result + (getProcessEntity() != null ? getProcessEntity().hashCode() : 0);
+        result = 31 * result + (getEquipmentEntities() != null ? getEquipmentEntities().hashCode() : 0);
+        result = 31 * result + (getRoomEntity() != null ? getRoomEntity().hashCode() : 0);
+        result = 31 * result + (getDuration() != null ? getDuration().hashCode() : 0);
+        result = 31 * result + (isNightShift() ? 1 : 0);
+        result = 31 * result + (isWeekend() ? 1 : 0);
+        result = 31 * result + (getStartTime() != null ? getStartTime().hashCode() : 0);
+        result = 31 * result + (getEndTime() != null ? getEndTime().hashCode() : 0);
+        return result;
+    }
 }
