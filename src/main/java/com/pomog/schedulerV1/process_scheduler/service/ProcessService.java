@@ -16,7 +16,7 @@ public interface ProcessService {
     
     Response<List<ProcessDTO>> getAllProcesses();
     
-    Response<ProcessEntity> updateProcessResponse(UUID processId, ProcessEntity updatedProcess);
+    Response<ProcessDTO> updateProcessResponse(UUID processId, ProcessEntity updatedProcess);
     
     Response<Void> deleteProcessById(UUID processId);
     

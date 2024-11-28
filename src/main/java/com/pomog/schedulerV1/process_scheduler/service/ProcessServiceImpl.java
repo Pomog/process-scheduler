@@ -50,9 +50,27 @@ public class ProcessServiceImpl extends BaseService<ProcessEntity, ProcessDTO> i
         return buildResponseForList(convertEntitiesToDTOs(processRepository.findAll()));
     }
     
+    // TODO need to work on this method
     @Override
-    public Response<ProcessEntity> updateProcessResponse(UUID processId, ProcessEntity updatedProcess) {
-        return null;
+    public Response<ProcessDTO> updateProcessResponse(UUID processId, ProcessEntity updatedProcess) {
+        
+        ProcessEntity processFromDB = processRepository.getReferenceById(processId);
+        
+        String newProcessName = updatedProcess.getProcessName();
+        if (!newProcessName.isBlank()){
+            processFromDB.setProcessName(newProcessName);
+        }
+        
+        List<StepEntity> stepsFormDB = processFromDB.getStepEntities();
+        updatedProcess.getStepEntities().forEach(
+                (step) -> {
+                    if (!stepsFormDB.contains(step)){
+                        processFromDB.addStep(step);
+                    }
+                }
+        );
+        
+        return buildSuccessResponseToSave(convertToDTO(processFromDB));
     }
     
     @Override
