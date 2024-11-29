@@ -9,12 +9,11 @@ import com.pomog.schedulerV1.process_scheduler.exception.ExceptionFactory;
 import com.pomog.schedulerV1.process_scheduler.repository.ProcessRepository;
 import com.pomog.schedulerV1.process_scheduler.response.Response;
 import com.pomog.schedulerV1.process_scheduler.response.ResponseFactory;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class ProcessServiceImpl extends BaseService<ProcessEntity, ProcessDTO> implements ProcessService {
@@ -50,28 +49,52 @@ public class ProcessServiceImpl extends BaseService<ProcessEntity, ProcessDTO> i
         return buildResponseForList(convertEntitiesToDTOs(processRepository.findAll()));
     }
     
-    // TODO need to work on this method
     @Override
     public Response<ProcessDTO> updateProcessResponse(UUID processId, ProcessEntity updatedProcess) {
         
-        ProcessEntity processFromDB = processRepository.getReferenceById(processId);
+        ProcessEntity processFromDB = processRepository.findById(processId)
+                .orElseThrow(() -> buildNotFoundException("ProcessEntity"));
         
+        updateProcessName(processFromDB, updatedProcess);
+        
+        updateProcessSteps(processFromDB, updatedProcess);
+        
+        return buildSuccessResponseToSave(convertToDTO(processFromDB));
+    }
+    
+    private static void updateProcessName(ProcessEntity processFromDB, ProcessEntity updatedProcess) {
         String newProcessName = updatedProcess.getProcessName();
-        if (!newProcessName.isBlank()){
+        // newProcessName can not be null - class constructor constraint
+        if (StringUtils.isNotBlank(newProcessName) && !newProcessName.equals(processFromDB.getProcessName())){
             processFromDB.setProcessName(newProcessName);
         }
+    }
+    
+    private static void updateProcessSteps(ProcessEntity processFromDB, ProcessEntity updatedProcess) {
+        List<StepEntity> updatedSteps = updatedProcess.getStepEntities();
         
-        List<StepEntity> stepsFormDB = processFromDB.getStepEntities();
+        if (updatedSteps == null || updatedSteps.isEmpty()) {
+            return;
+        }
+        
+        List<StepEntity> stepsFromDB = processFromDB.getStepEntities();
+        Set<StepEntity> stepsFromDBSet = new HashSet<>(stepsFromDB);
+        
         updatedProcess.getStepEntities().forEach(
                 (step) -> {
-                    if (!stepsFormDB.contains(step)){
+                    if (!stepsFromDBSet.contains(step)){
+                        step.setProcessEntity(processFromDB);
                         processFromDB.addStep(step);
+                    } else {
+                        stepsFromDBSet.remove(step);
                     }
                 }
         );
         
-        return buildSuccessResponseToSave(convertToDTO(processFromDB));
+        // TODO not sure should the other steps be deleted
+        // stepsFromDBSet.forEach(processFromDB::deleteStep);
     }
+
     
     @Override
     public Response<Void> deleteProcessById(UUID processId) {
