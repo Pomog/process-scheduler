@@ -7,6 +7,7 @@ import com.pomog.schedulerV1.process_scheduler.entity.ProcessEntity;
 import com.pomog.schedulerV1.process_scheduler.entity.StepEntity;
 import com.pomog.schedulerV1.process_scheduler.exception.ExceptionFactory;
 import com.pomog.schedulerV1.process_scheduler.repository.ProcessRepository;
+import com.pomog.schedulerV1.process_scheduler.repository.StepRepository;
 import com.pomog.schedulerV1.process_scheduler.response.Response;
 import com.pomog.schedulerV1.process_scheduler.response.ResponseFactory;
 import io.micrometer.common.util.StringUtils;
@@ -18,6 +19,7 @@ import java.util.*;
 @Service
 public class ProcessServiceImpl extends BaseService<ProcessEntity, ProcessDTO> implements ProcessService {
     private final ProcessRepository processRepository;
+    private final StepRepository stepRepository;
     private final ResponseFactory responseFactory;
     
     protected ProcessServiceImpl(
@@ -25,9 +27,10 @@ public class ProcessServiceImpl extends BaseService<ProcessEntity, ProcessDTO> i
             MessageSource messageSource,
             DTOFactory<ProcessEntity,
                     ProcessDTO> dtoFactory,
-            ProcessRepository processRepository, ExceptionFactory exceptionFactory, ResponseFactory responseFactory1) {
+            ProcessRepository processRepository, ExceptionFactory exceptionFactory, StepRepository stepRepository, ResponseFactory responseFactory1) {
         super(responseFactory, messageSource, dtoFactory, exceptionFactory);
         this.processRepository = processRepository;
+        this.stepRepository = stepRepository;
         this.responseFactory = responseFactory1;
     }
     
@@ -62,7 +65,7 @@ public class ProcessServiceImpl extends BaseService<ProcessEntity, ProcessDTO> i
         return buildSuccessResponseToSave(convertToDTO(processFromDB));
     }
     
-    private static void updateProcessName(ProcessEntity processFromDB, ProcessEntity updatedProcess) {
+    private void updateProcessName(ProcessEntity processFromDB, ProcessEntity updatedProcess) {
         String newProcessName = updatedProcess.getProcessName();
         // newProcessName can not be null - class constructor constraint
         if (StringUtils.isNotBlank(newProcessName) && !newProcessName.equals(processFromDB.getProcessName())){
@@ -70,15 +73,14 @@ public class ProcessServiceImpl extends BaseService<ProcessEntity, ProcessDTO> i
         }
     }
     
-    private static void updateProcessSteps(ProcessEntity processFromDB, ProcessEntity updatedProcess) {
+    private void updateProcessSteps(ProcessEntity processFromDB, ProcessEntity updatedProcess) {
         List<StepEntity> updatedSteps = updatedProcess.getStepEntities();
         
         if (updatedSteps == null || updatedSteps.isEmpty()) {
             return;
         }
-        
-        List<StepEntity> stepsFromDB = processFromDB.getStepEntities();
-        Set<StepEntity> stepsFromDBSet = new HashSet<>(stepsFromDB);
+
+        Set<StepEntity> stepsFromDBSet = new HashSet<>(processFromDB.getStepEntities());
         
         updatedProcess.getStepEntities().forEach(
                 (step) -> {
@@ -91,8 +93,7 @@ public class ProcessServiceImpl extends BaseService<ProcessEntity, ProcessDTO> i
                 }
         );
         
-        // TODO not sure should the other steps be deleted
-        // stepsFromDBSet.forEach(processFromDB::deleteStep);
+        stepsFromDBSet.forEach(processFromDB::deleteStep);
     }
 
     
@@ -120,5 +121,15 @@ public class ProcessServiceImpl extends BaseService<ProcessEntity, ProcessDTO> i
                 .toList();
         
         return responseFactory.buildSuccessResponse(getMessage("fetch.success"), stepDTOs);
+    }
+    
+    @Override
+    public Response<ProcessDTO> addStepToProcess(UUID processId, StepEntity stepEntity) {
+        // Find the ProcessEntity by processId
+        // Set the process reference in the StepEntity
+        // Add the step to the process
+        // Save the process to persist the changes
+        
+        return null;
     }
 }

@@ -21,4 +21,6 @@ public interface ProcessService {
     Response<Void> deleteProcessById(UUID processId);
     
     Response<List<StepDTO>> getStepsForProcessResponse(UUID processId);
+    
+    Response<ProcessDTO> addStepToProcess(UUID processId, StepEntity stepEntity);
 }
