@@ -51,4 +51,10 @@ public class StepDTO {
         this.equipment = stepEntity.getEquipmentEntities().stream()
                 .map(EquipmentDTO::new).collect(Collectors.toList());
     }
+    
+    // TODO Avoid Mutating DTO?
+    public StepDTO toDtoWithoutEquipment() {
+        this.equipment = null;
+        return this;
+    }
 }

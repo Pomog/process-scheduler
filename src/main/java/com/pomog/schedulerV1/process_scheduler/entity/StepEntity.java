@@ -8,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "step")
@@ -32,7 +30,7 @@ public class StepEntity {
     private ProcessEntity processEntity;
     
     @ManyToMany(mappedBy = "stepEntities", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<EquipmentEntity> equipmentEntities = new ArrayList<>();
+    private Set<EquipmentEntity> equipmentEntities = new HashSet<>();
     
     @OneToOne
     @JoinColumn(name = "code")

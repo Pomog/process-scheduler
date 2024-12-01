@@ -3,9 +3,7 @@ package com.pomog.schedulerV1.process_scheduler.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "equipment")
@@ -25,11 +23,11 @@ public class EquipmentEntity {
     @Column(name = "code")
     private String code;
     
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(
             name = "equipment_steps",
             joinColumns = @JoinColumn(name = "equipment_id"),
             inverseJoinColumns = @JoinColumn(name = "step_id")
     )
-    private List<StepEntity> stepEntities = new ArrayList<>();
+    private Set<StepEntity> stepEntities = new HashSet<>();
 }

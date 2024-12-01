@@ -2,7 +2,9 @@ package com.pomog.schedulerV1.process_scheduler.dto;
 
 import com.pomog.schedulerV1.process_scheduler.annotation.ValidUUID;
 import com.pomog.schedulerV1.process_scheduler.entity.EquipmentEntity;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -27,16 +29,17 @@ public class EquipmentDTO {
     
     private List<StepDTO> steps = new ArrayList<>();
     
-    public void addStep(StepDTO stepDTO){
-        steps.add(stepDTO);
-    }
-    
     public EquipmentDTO(EquipmentEntity equipmentEntity) {
         this.ID = equipmentEntity.getID();
         this.name = equipmentEntity.getName();
         this.code = equipmentEntity.getCode();
         this.steps.addAll(equipmentEntity.getStepEntities().stream()
                 .map(StepDTO::new)
+                .map(StepDTO::toDtoWithoutEquipment)
                 .toList());
+    }
+    
+    public void addStep(StepDTO stepDTO) {
+        steps.add(stepDTO);
     }
 }
