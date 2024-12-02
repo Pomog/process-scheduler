@@ -28,6 +28,7 @@ public class SkillDTO {
     
     private int level;
     
+    // Learning EVE
     public SkillDTO(SkillEntity skillEntity){
         this.ID = skillEntity.getID();
         this.processName = skillEntity.getProcessName();
