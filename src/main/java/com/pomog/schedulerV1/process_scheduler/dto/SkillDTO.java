@@ -1,13 +1,11 @@
 package com.pomog.schedulerV1.process_scheduler.dto;
 
 import com.pomog.schedulerV1.process_scheduler.annotation.ValidUUID;
+import com.pomog.schedulerV1.process_scheduler.entity.SkillEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import com.pomog.schedulerV1.process_scheduler.entity.SkillEntity;
 
 import java.util.UUID;
 
@@ -29,7 +27,7 @@ public class SkillDTO {
     private int level;
     
     // Learning EVE
-    public SkillDTO(SkillEntity skillEntity){
+    public SkillDTO(SkillEntity skillEntity) {
         this.ID = skillEntity.getID();
         this.processName = skillEntity.getProcessName();
         this.stepName = skillEntity.getStepName();
