@@ -39,7 +39,9 @@ public class EquipmentDTO {
                 .toList());
     }
     
-    public void addStep(StepDTO stepDTO) {
-        steps.add(stepDTO);
+    // TODO Avoid Mutating DTO?
+    public EquipmentDTO toDtoWithoutEquipment() {
+        this.steps = null;
+        return this;
     }
 }

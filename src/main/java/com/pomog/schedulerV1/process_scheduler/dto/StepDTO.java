@@ -49,7 +49,9 @@ public class StepDTO {
         this.endTime = stepEntity.getEndTime();
         
         this.equipment = stepEntity.getEquipmentEntities().stream()
-                .map(EquipmentDTO::new).collect(Collectors.toList());
+                .map(EquipmentDTO::new)
+                .map(EquipmentDTO::toDtoWithoutEquipment)
+                .collect(Collectors.toList());
     }
     
     // TODO Avoid Mutating DTO?

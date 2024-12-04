@@ -24,6 +24,3 @@ CREATE DATABASE process_scheduler_db;
 ```bash
 \q
 ```
-
-03122024 EVE
-
