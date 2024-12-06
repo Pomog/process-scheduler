@@ -35,7 +35,11 @@ public class OperatorDTO {
         this.skills = operatorEntity.getSkillEntities().stream()
                 .map(SkillDTO::new)
                 .collect(Collectors.toList());
+        removeOperatorsFromSkills();
         
+    }
+    public void removeOperatorsFromSkills() {
+        this.skills.forEach((skills) -> skills.setOperators(null));
     }
     
 }
