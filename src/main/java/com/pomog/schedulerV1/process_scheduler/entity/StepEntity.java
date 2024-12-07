@@ -51,14 +51,6 @@ public class StepEntity {
     @Column(name = "end-time")
     private LocalDateTime endTime;
     
-    public boolean addEquipment (EquipmentEntity equipmentEntity){
-        return equipmentEntities.add(equipmentEntity);
-    }
-    
-    public boolean deleteEquipment (EquipmentEntity equipmentEntity){
-        return equipmentEntities.remove(equipmentEntity);
-    }
-    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -78,6 +70,14 @@ public class StepEntity {
         if (getStartTime() != null ? !getStartTime().equals(that.getStartTime()) : that.getStartTime() != null)
             return false;
         return getEndTime() != null ? getEndTime().equals(that.getEndTime()) : that.getEndTime() == null;
+    }
+    
+    public boolean addEquipment (EquipmentEntity equipmentEntity){
+        return equipmentEntities.add(equipmentEntity);
+    }
+    
+    public boolean deleteEquipment (EquipmentEntity equipmentEntity){
+        return equipmentEntities.remove(equipmentEntity);
     }
     
     @Override

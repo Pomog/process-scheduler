@@ -35,11 +35,14 @@ public class ProcessEntity {
             fetch = FetchType.EAGER)
     private List<StepEntity> stepEntities = new ArrayList<>();
     
+    // TODO test this method
     public boolean addStep (StepEntity stepEntity){
        return stepEntities.add(stepEntity);
     }
     
+    // TODO test this method
     public boolean deleteStep (StepEntity stepEntity){
         return stepEntities.remove(stepEntity);
     }
+
 }
