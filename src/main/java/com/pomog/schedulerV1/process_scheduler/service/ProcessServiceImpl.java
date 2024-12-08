@@ -35,12 +35,12 @@ public class ProcessServiceImpl extends BaseService<ProcessEntity, ProcessDTO> i
     }
     
     @Override
-    public Response<ProcessDTO> createProcessResponse(ProcessEntity processEntity) {
+    public Response<ProcessDTO> saveProcess(ProcessEntity processEntity) {
         return buildSuccessResponseToSave(convertToDTO(processRepository.save(processEntity)));
     }
     
     @Override
-    public Response<ProcessDTO> getProcessByIdResponse(UUID processId) {
+    public Response<ProcessDTO> getProcessByID(UUID processId) {
         return buildSuccessResponseToGet(
                 convertToDTO(processRepository.findById(processId)
                         .orElseThrow(() -> buildNotFoundException("Process"))));

@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ProcessService {
-    Response<ProcessDTO> createProcessResponse(ProcessEntity processEntity);
+    Response<ProcessDTO> saveProcess(ProcessEntity processEntity);
     
-    Response<ProcessDTO> getProcessByIdResponse(UUID processId);
+    Response<ProcessDTO> getProcessByID(UUID processId);
     
     Response<List<ProcessDTO>> getAllProcesses();
     
